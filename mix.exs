@@ -1,6 +1,7 @@
 defmodule Anivia.Mixfile do
   use Mix.Project
 
+
   def project do
     [app: :anivia,
      version: "0.0.1",
@@ -37,7 +38,9 @@ defmodule Anivia.Mixfile do
      {:phoenix_html, "~> 2.4"},
      {:phoenix_live_reload, "~> 1.0", only: :dev},
      {:gettext, "~> 0.9"},
-     {:cowboy, "~> 1.0"}]
+     {:cowboy, "~> 1.0"},
+     {:poison, "~> 2.1.0", override: true},
+     {:viktor, "~> 0.0.9"}]
   end
 
   # Aliases are shortcut or tasks specific to the current project.
