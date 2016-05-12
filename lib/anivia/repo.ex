@@ -1,3 +1,3 @@
 defmodule Anivia.Repo do
-  use Ecto.Repo, otp_app: :anivia
+#  use Ecto.Repo, otp_app: :anivia
 end

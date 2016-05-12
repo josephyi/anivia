@@ -31,8 +31,8 @@ defmodule Anivia.Web do
       use Phoenix.Controller
 
       alias Anivia.Repo
-      import Ecto
-      import Ecto.Query, only: [from: 1, from: 2]
+      #import Ecto
+      #import Ecto.Query, only: [from: 1, from: 2]
 
       import Anivia.Router.Helpers
       import Anivia.Gettext

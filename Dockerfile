@@ -1,18 +1,18 @@
-FROM josephyi/alpine-phoenix
+FROM josephyi/alpine-phoenix:1.2
 
-COPY mix.exs /tmp
-COPY mix.lock /tmp
-WORKDIR /tmp
-
-RUN yes | mix local.hex && mix deps.get
-
-
-
-ADD ./ /app
+RUN mkdir /app
 WORKDIR /app
+ENV MIX_ENV=prod
 
-RUN mix deps.compile
+COPY package.json /app
+COPY mix.exs /app
 
+RUN npm install
+RUN mix deps.get
+
+COPY . /app
+RUN mix compile && mix phoenix.digest
 EXPOSE 4000
-
-ENTRYPOINT ["mix", "phoenix.server"]
+EXPOSE 4001
+VOLUME ["/app"]
+CMD ["mix", "phoenix.server"]

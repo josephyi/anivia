@@ -10,7 +10,7 @@ defmodule Anivia do
       # Start the endpoint when the application starts
       supervisor(Anivia.Endpoint, []),
       # Start the Ecto repository
-      supervisor(Anivia.Repo, []),
+      # supervisor(Anivia.Repo, []),
       # Here you could define other workers and supervisors as children
       # worker(Anivia.Worker, [arg1, arg2, arg3]),
     ]
