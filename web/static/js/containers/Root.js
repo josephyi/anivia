@@ -1,8 +1,20 @@
-import React, { Component } from 'react'
-import { render } from 'react-dom'
+import React, { Component, PropTypes } from 'react'
+import { Provider } from 'react-redux'
+import routes from '../routes'
+import { Router } from 'react-router'
 
 export default class Root extends Component {
-  render () {
-    return <h1>hello, Summoners rift!</h1>;
-  }
+    render() {
+        const { store, history } = this.props
+        return (
+            <Provider store={store}>
+                <Router history={history} routes={routes} />
+            </Provider>
+        )
+    }
+}
+
+Root.propTypes = {
+    store: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired
 }
