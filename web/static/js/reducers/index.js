@@ -3,11 +3,9 @@ import {reducer as formReducer} from 'redux-form'
 import { routerReducer as routing } from 'react-router-redux'
 import merge from 'lodash/merge'
 
-function entities(state = {}, action) {
+function entities(state = {summoner: {name: ""}, rankedStats: []}, action) {
     if(action.response) {
         console.log("lets merge")
-        console.log(action.response)
-        console.log(merge({}, state, action.response))
 
         return merge({}, state, action.response)
     } else {
