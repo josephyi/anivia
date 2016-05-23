@@ -17,10 +17,11 @@ defmodule Anivia.Router do
     pipe_through :browser # Use the default browser stack
 
     get "/", PageController, :index
+    get "/:region/:summoner_name", PageController, :index
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", Anivia do
-  #   pipe_through :api
-  # end
+  scope "/api", Anivia do
+    pipe_through :api
+    get "/:region/:summoner_name", ApiController, :summoner_page
+  end
 end

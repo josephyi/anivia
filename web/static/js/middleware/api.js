@@ -1,7 +1,7 @@
 import 'isomorphic-fetch'
 
-function callApi(endpoint) {
-
+function callApi(endpoint_suffix) {
+    const endpoint = '/api/' + endpoint_suffix
     return fetch(endpoint)
         .then(response =>
             response.json().then(json => ({ json, response }))
@@ -9,13 +9,7 @@ function callApi(endpoint) {
             if (!response.ok) {
                 return Promise.reject(json)
             }
-
-            const camelizedJson = camelizeKeys(json)
-            const nextPageUrl = getNextPageUrl(response)
-
-            return Object.assign({},
-                normalize(camelizedJson, schema),
-                { nextPageUrl }
+            return Object.assign({}, json
             )
         })
 }
@@ -36,8 +30,6 @@ export default store => next => action => {
         delete finalAction[CALL_API]
         return finalAction
     }
-
-
 
     const [ requestType, successType, failureType ] = types
     next(actionWith({ type: requestType }))

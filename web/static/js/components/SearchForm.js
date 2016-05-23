@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { reduxForm } from 'redux-form'
+import { browserHistory } from 'react-router'
 import { loadSummoner } from '../actions'
 export const fields = ['region', 'summonerName']
 
@@ -33,9 +34,7 @@ class SearchForm extends Component {
     }
 
     saveForm(data) {
-        console.log("save form")
-        this.props.dispatch(loadSummoner('na', 'orlyzomg'))
-        console.log("done")
+        browserHistory.push(`/${data.region}/${data.summonerName}`)
     }
 }
 
@@ -50,4 +49,4 @@ SearchForm.propTypes = {
 export default reduxForm({
     form: 'search',
     fields
-}, loadSummoner)(SearchForm);
+})(SearchForm);

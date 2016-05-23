@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import SearchForm from '../components/SearchForm'
 
-export default class App extends Component {
+class App extends Component {
     constructor(props) {
         super(props)
     }
@@ -17,3 +17,5 @@ export default class App extends Component {
         )
     }
 }
+
+export default connect()(App)
