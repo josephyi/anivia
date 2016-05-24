@@ -11,7 +11,7 @@ function loadData(props) {
 
 function renderRankedStatsRow(champion) {
     return (<tr key={champion.id}>
-        <td><img width={64} height={64}
+        <td><img width={16} height={16}
                  src={`http://ddragon.leagueoflegends.com/cdn/6.10.1/img/champion/${champion.image.full}`}/>{champion.name}
         </td>
         <td>{champion.totalSessionsWon}</td>
@@ -70,9 +70,9 @@ SummonerPage.propTypes = {
 }
 
 function mapStateToProps(state) {
-    const {entities: {summoner, rankedStats}} = state
+    const {entities: {summoner, rankedStats, recentGames}} = state
     return {
-        summoner, rankedStats
+        summoner, rankedStats, recentGames
     }
 }
 
