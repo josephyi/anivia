@@ -1,12 +1,15 @@
 import React, {Component, PropTypes} from 'react'
 import {render} from 'react-dom'
-import {loadSummoner} from '../actions'
+import {loadSummonerDetail} from '../actions'
 import {connect} from 'react-redux'
 import {Grid, Row, Table} from 'react-bootstrap'
 
 function loadData(props) {
-    const {region, summonerName} = props.params
-    props.loadSummoner(region, summonerName)
+    console.log("loadData")
+    console.log(props)
+    const {region} = props.params
+    const {summoner} = props
+    props.loadSummonerDetail(region, summoner.id)
 }
 
 function renderRankedStatsRow(champion) {
@@ -17,7 +20,8 @@ function renderRankedStatsRow(champion) {
         <td>{champion.totalSessionsWon}</td>
         <td>{champion.totalSessionsLost}</td>
         <td>{`${Math.round(champion.totalSessionsWon / champion.totalSessionsPlayed * 100)}%`}</td>
-        <td>{champion.totalDeathsPerSession > 0 ? ((champion.totalChampionKills + champion.totalAssists) / champion.totalDeathsPerSession).toFixed(2) : "Perfect"}</td>
+        <td>{`${(champion.totalChampionKills/champion.totalSessionsPlayed).toFixed(2)}/${(champion.totalDeathsPerSession/champion.totalSessionsPlayed).toFixed(2)}/${(champion.totalAssists/champion.totalSessionsPlayed).toFixed(2)}`}
+            <br/>{champion.totalDeathsPerSession > 0 ? ((champion.totalChampionKills + champion.totalAssists) / champion.totalDeathsPerSession).toFixed(2) : "Perfect"}</td>
         <td>{Math.round(champion.totalMinionKills / champion.totalSessionsPlayed)}</td>
     </tr>)
 }
@@ -64,7 +68,7 @@ class SummonerPage extends Component {
 }
 
 SummonerPage.propTypes = {
-    loadSummoner: PropTypes.func.isRequired,
+    loadSummonerDetail: PropTypes.func.isRequired,
     summoner: PropTypes.object,
     rankedStats: PropTypes.array.isRequired
 }
@@ -77,4 +81,4 @@ function mapStateToProps(state) {
 }
 
 
-export default connect(mapStateToProps, {loadSummoner})(SummonerPage)
+export default connect(mapStateToProps, {loadSummonerDetail})(SummonerPage)

@@ -1,18 +1,24 @@
 import React, { Component, PropTypes } from 'react'
 import { reduxForm } from 'redux-form'
-import { browserHistory } from 'react-router'
-import { loadSummoner } from '../actions'
+
 export const fields = ['region', 'summonerName']
+
+const validate = values => {
+    const errors = {}
+    if (!values.summonerName) {
+        errors.summonerName = 'Required'
+    }
+    return errors
+}
 
 class SearchForm extends Component {
     constructor(props) {
         super(props)
-        this.saveForm = this.saveForm.bind(this)
     }
 
     render() {
         const { fields: { region, summonerName }, error, handleSubmit, submitting } = this.props
-        return (<form className="form-inline " onSubmit={handleSubmit(this.saveForm)}>
+        return (<form className="form-inline " onSubmit={handleSubmit}>
                 <div className="form-group">
                     <label className="sr-only">Region</label>
                     <input type="text" className="form-control" placeholder="Region" {...region}/>
@@ -33,8 +39,10 @@ class SearchForm extends Component {
         )
     }
 
-    saveForm(data) {
-        browserHistory.push(`/${data.region}/${data.summonerName}`)
+    saveForm(data, dispatch) {
+        dispatch(loadSummoner(data.region, data.summonerName))
+
+
     }
 }
 
@@ -47,6 +55,7 @@ SearchForm.propTypes = {
 
 
 export default reduxForm({
-    form: 'search',
-    fields
+    form: 'searchForm',
+    fields,
+    validate
 })(SearchForm);
