@@ -1,28 +1,47 @@
 import React, { Component, PropTypes } from 'react'
 import { reduxForm } from 'redux-form'
-import { browserHistory } from 'react-router'
-import { loadSummoner } from '../actions'
+
 export const fields = ['region', 'summonerName']
+
+const validate = values => {
+    const errors = {}
+    if (!values.summonerName) {
+        errors.summonerName = 'Required'
+    }
+    return errors
+}
 
 class SearchForm extends Component {
     constructor(props) {
         super(props)
-        this.saveForm = this.saveForm.bind(this)
     }
 
     render() {
         const { fields: { region, summonerName }, error, handleSubmit, submitting } = this.props
-        return (<form className="form-inline " onSubmit={handleSubmit(this.saveForm)}>
-                <div className="form-group">
-                    <label className="sr-only">Region</label>
-                    <input type="text" className="form-control" placeholder="Region" {...region}/>
-                    {region.touched && region.error && <div>{region.error}</div>}
-                </div>
+        return (<form className="form-inline " onSubmit={handleSubmit}>
+
                 <div className="form-group">
                     <label className="sr-only">Summoner Name</label>
                     <input type="text" className="form-control" placeholder="Summoner Name" {...summonerName}/>
                     {summonerName.touched && summonerName.error && <div>{summonerName.error}</div>}
                 </div>
+                {' '}
+                <div className="form-group">
+                    <select className="form-control" {...region} >
+                        <option value="br">BR</option>
+                        <option value="eune">EUNE</option>
+                        <option value="euw">EUW</option>
+                        <option value="kr">KR</option>
+                        <option value="lan">LAN</option>
+                        <option value="las">LAS</option>
+                        <option value="na">NA</option>
+                        <option value="oce">OCE</option>
+                        <option value="ru">RU</option>
+                        <option value="tr">TR</option>
+                        <option value="pbe">PBE</option>
+                    </select>
+                </div>
+                {' '}
                 {error && <div>{error}</div>}
 
                     <button className="btn btn-primary" type="submit" disabled={submitting}>
@@ -33,9 +52,6 @@ class SearchForm extends Component {
         )
     }
 
-    saveForm(data) {
-        browserHistory.push(`/${data.region}/${data.summonerName}`)
-    }
 }
 
 SearchForm.propTypes = {
@@ -47,6 +63,10 @@ SearchForm.propTypes = {
 
 
 export default reduxForm({
-    form: 'search',
-    fields
+    form: 'searchForm',
+    fields,
+    validate,
+    initialValues: {
+        region: 'na'
+    }
 })(SearchForm);
