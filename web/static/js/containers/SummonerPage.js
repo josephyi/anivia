@@ -1,15 +1,17 @@
 import React, {Component, PropTypes} from 'react'
 import {render} from 'react-dom'
-import {loadSummonerDetail} from '../actions'
+import {loadSummoner, loadSummonerDetail} from '../actions'
 import {connect} from 'react-redux'
 import {Grid, Row, Table} from 'react-bootstrap'
 
 function loadData(props) {
-    console.log("loadData")
-    console.log(props)
-    const {region} = props.params
+    const {region, summonerName} = props.params
     const {summoner} = props
-    props.loadSummonerDetail(region, summoner.id)
+
+    if(summoner.id === undefined)
+        props.loadSummoner(region, summonerName)
+    else
+        props.loadSummonerDetail(region, summoner.id)
 }
 
 function renderRankedStatsRow(champion) {
@@ -36,9 +38,18 @@ class SummonerPage extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const {region, summonerName} = this.props.params
-        if (nextProps.params.region !== region || nextProps.params.summonerName !== summonerName)
-            loadData(nextProps)
+        console.log("componentWillReceiveProps()")
+        console.log(nextProps)
+        //loadData(nextProps)
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        console.log("summonerpage componentDidUpdate")
+        const { summoner } = this.props
+        const prevSummoner  = prevProps.summoner
+
+        if(prevSummoner.name === "" || prevSummoner.name !== summoner.name)
+            loadData(this.props)
     }
 
 
@@ -81,4 +92,4 @@ function mapStateToProps(state) {
 }
 
 
-export default connect(mapStateToProps, {loadSummonerDetail})(SummonerPage)
+export default connect(mapStateToProps, {loadSummoner, loadSummonerDetail})(SummonerPage)

@@ -16,11 +16,12 @@ class App extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        console.log("componentDidUpdate")
         const { summoner, searchForm } = this.props
+        const summonerChanged = summoner.name !== prevProps.summoner.name && summoner.id !== prevProps.summoner.id
 
-        if(prevProps.summoner != null && summoner.name !== prevProps.summoner.name )
-            browserHistory.push(`/na/${summoner.name}`)
+        if(summonerChanged) {
+            browserHistory.push(`/${searchForm.region.value}/${summoner.name}`)
+        }
     }
 
     render() {
@@ -35,8 +36,6 @@ class App extends Component {
 }
 
 function mapStateToProps(state) {
-    console.log("mstp")
-    console.log(state)
     const {entities: {summoner}, form: {searchForm}} = state
     return {
         errorMessage: state.errorMessage,

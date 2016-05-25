@@ -5,7 +5,6 @@ export const SUMMONER_DETAIL_SUCCESS = 'SUMMONER_DETAIL_SUCCESS'
 export const SUMMONER_DETAIL_REQUEST = 'SUMMONER_DETAIL_REQUEST'
 
 function doSummonerSearch(region, summonerId) {
-    console.log("doSummSear")
     return {
         [CALL_API] : {
             types: [SUMMONER_DETAIL_REQUEST, SUMMONER_DETAIL_SUCCESS, SUMMONER_DETAIL_FAILURE],
