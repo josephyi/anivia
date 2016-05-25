@@ -17,13 +17,13 @@ function loadData(props) {
 function renderRankedStatsRow(champion) {
     return (<tr key={champion.id}>
         <td><img width={16} height={16}
-                 src={`http://ddragon.leagueoflegends.com/cdn/6.10.1/img/champion/${champion.image.full}`}/>{champion.name}
+                 src={`http://ddragon.leagueoflegends.com/cdn/6.10.1/img/champion/${champion.image.full}`}/>{' '}   {champion.name}
         </td>
         <td>{champion.totalSessionsWon}</td>
         <td>{champion.totalSessionsLost}</td>
         <td>{`${Math.round(champion.totalSessionsWon / champion.totalSessionsPlayed * 100)}%`}</td>
         <td>{`${(champion.totalChampionKills/champion.totalSessionsPlayed).toFixed(2)}/${(champion.totalDeathsPerSession/champion.totalSessionsPlayed).toFixed(2)}/${(champion.totalAssists/champion.totalSessionsPlayed).toFixed(2)}`}
-            <br/>{champion.totalDeathsPerSession > 0 ? ((champion.totalChampionKills + champion.totalAssists) / champion.totalDeathsPerSession).toFixed(2) : "Perfect"}</td>
+            {champion.totalDeathsPerSession > 0 ? ((champion.totalChampionKills + champion.totalAssists) / champion.totalDeathsPerSession).toFixed(2) : "Perfect"}</td>
         <td>{Math.round(champion.totalMinionKills / champion.totalSessionsPlayed)}</td>
     </tr>)
 }
@@ -37,14 +37,7 @@ class SummonerPage extends Component {
         loadData(this.props)
     }
 
-    componentWillReceiveProps(nextProps) {
-        console.log("componentWillReceiveProps()")
-        console.log(nextProps)
-        //loadData(nextProps)
-    }
-
     componentDidUpdate(prevProps, prevState) {
-        console.log("summonerpage componentDidUpdate")
         const { summoner } = this.props
         const prevSummoner  = prevProps.summoner
 
@@ -64,7 +57,7 @@ class SummonerPage extends Component {
                         <th>Champion</th>
                         <th>Win</th>
                         <th>Loss</th>
-                        <th>Win Percentage</th>
+                        <th>Win %</th>
                         <th>KDA</th>
                         <th>Avg CS</th>
                     </tr>
@@ -85,9 +78,12 @@ SummonerPage.propTypes = {
 }
 
 function mapStateToProps(state) {
-    const {entities: {summoner, rankedStats, recentGames}} = state
+    const {entities: {summoner, rankedStats, recentGames, staticChampData}} = state
     return {
-        summoner, rankedStats, recentGames
+        summoner,
+        rankedStats,
+        recentGames,
+        staticChampData
     }
 }
 

@@ -5,7 +5,7 @@ import merge from 'lodash/merge'
 
 function entities(state = {summoner: {name: ""}, rankedStats: []}, action) {
     if(action.response) {
-        return merge({}, state, action.response)
+        return merge({}, Object.assign({}, state, {rankedStats: []}), action.response)
     } else {
         return state
     }
