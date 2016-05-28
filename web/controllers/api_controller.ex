@@ -26,9 +26,21 @@ defmodule Anivia.ApiController do
 
   def summoner(conn, %{"region" => region, "summoner_name" => summoner_name}) do
       canonical_name = canonicalize(summoner_name)
-      summoner = Viktor.Operation.Summoner.by_name(region, canonical_name)[canonical_name]
-      result = Map.new |> Map.put("summoner", summoner)
+
+      response = Viktor.Operation.Summoner.by_name(region, canonical_name)
+      case response do
+         %{"status" => %{"status_code" => _}} ->
+           conn
+           |> put_status(response["status"] |> Map.fetch!("status_code"))
+           |> render(Anivia.ErrorView, "errors.json", response: response)
+         _ ->
+           result = Map.new |> Map.put("summoner", response[canonical_name])
+
+
       json conn, result
+  end
+
+
   end
 
   def canonicalize(name) do
