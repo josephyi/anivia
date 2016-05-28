@@ -1,17 +1,16 @@
 import React, {Component, PropTypes} from 'react'
 import {render} from 'react-dom'
-import {loadSummoner, loadSummonerDetail} from '../actions'
+import {loadSummoner} from '../actions'
 import {connect} from 'react-redux'
 import {Grid, Row, Table} from 'react-bootstrap'
 
 function loadData(props) {
-    const {region, summonerName} = props.params
+    const {region, summonerName} = props
     const {summoner} = props
 
-    if(summoner.id === undefined)
+    if(summoner.id === undefined) {
         props.loadSummoner(region, summonerName)
-    else
-        props.loadSummonerDetail(region, summoner.id)
+    }
 }
 
 function renderRankedStatsRow(champion) {
@@ -36,15 +35,6 @@ class SummonerPage extends Component {
     componentWillMount() {
         loadData(this.props)
     }
-
-    componentDidUpdate(prevProps, prevState) {
-        const { summoner } = this.props
-        const prevSummoner  = prevProps.summoner
-
-        if(prevSummoner.name === "" || prevSummoner.name !== summoner.name)
-            loadData(this.props)
-    }
-
 
     render() {
         const {summoner, rankedStats} = this.props
@@ -72,20 +62,27 @@ class SummonerPage extends Component {
 }
 
 SummonerPage.propTypes = {
-    loadSummonerDetail: PropTypes.func.isRequired,
+    loadSummoner: PropTypes.func.isRequired,
     summoner: PropTypes.object,
     rankedStats: PropTypes.array.isRequired
 }
 
-function mapStateToProps(state) {
-    const {entities: {summoner, rankedStats, recentGames, staticChampData}} = state
+function mapStateToProps(state, ownProps) {
+    const region = ownProps.params.region
+    const summonerName = ownProps.params.summonerName
+
+    if (state.entities[region] === undefined || state.entities[region][summonerName] === undefined)
+        return {region, summoner: {}, summonerName, rankedStats: []}
+
+    const {summoner, rankedStats, recentGames} = state.entities[region][summonerName]
     return {
+        region,
+        summonerName,
         summoner,
         rankedStats,
-        recentGames,
-        staticChampData
+        recentGames
     }
 }
 
 
-export default connect(mapStateToProps, {loadSummoner, loadSummonerDetail})(SummonerPage)
+export default connect(mapStateToProps, {loadSummoner})(SummonerPage)

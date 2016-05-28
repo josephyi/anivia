@@ -14,18 +14,14 @@ class App extends Component {
     }
 
     handleSubmit(data, dispatch) {
+        this.props.resetErrorMessage()
         this.props.loadSummoner(data.region, data.summonerName)
+        browserHistory.push(`/${data.region}/${data.summonerName.toLowerCase()}`)
     }
 
     // handle new search
     componentDidUpdate(prevProps) {
-        const { summoner, searchForm, canonicalSummonerName } = this.props
-        const summonerChanged = summoner.name !== prevProps.summoner.name && summoner.id !== prevProps.summoner.id
 
-        // TODO: implement a better way to do this
-        if(summonerChanged && searchForm && searchForm.region && searchForm.region.value) {
-            browserHistory.push(`/${searchForm.region.value}/${canonicalSummonerName}`)
-        }
     }
 
     handleAlertDismiss() {
@@ -64,15 +60,21 @@ class App extends Component {
     }
 }
 
-function mapStateToProps(state) {
-    const {entities: {summoner}, form: {searchForm}} = state
+function mapStateToProps(state, ownProps) {
+    const { region, summonerName } = ownProps.params
 
-    const canonicalSummonerName = summoner.name.toLowerCase()
+    const {form: {searchForm}} = state
+
+
+    if (state.entities[region] === undefined)
+      return { errorMessage: state.errorMessage, searchForm, summoner: {} }
+
+    const summoner = state.entities[region][summonerName]
+
     return {
         errorMessage: state.errorMessage,
-        summoner,
-        searchForm,
-        canonicalSummonerName
+        summoner: summoner ? summoner["summoner"] || {} : {},
+        searchForm
     }
 }
 
