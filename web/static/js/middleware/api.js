@@ -4,10 +4,10 @@ function callApi(endpoint_suffix) {
     const endpoint = '/api/' + endpoint_suffix
     return fetch(endpoint)
         .then(response =>
-            response.json().then(json => ({ json, response }))
-    ).then(({ json, response }) => {
+            response.json().then(json => ({json, response}))
+        ).then(({json, response}) => {
             if (!response.ok) {
-                return Promise.reject(json)
+                return Promise.reject(response.statusText)
             }
             return Object.assign({}, json
             )
@@ -23,8 +23,8 @@ export default store => next => action => {
         return next(action)
     }
 
-    let { endpoint } = callAPI
-    const { types } = callAPI
+    let {endpoint} = callAPI
+    const {types} = callAPI
 
     function actionWith(data) {
         const finalAction = Object.assign({}, action, data)
@@ -33,16 +33,16 @@ export default store => next => action => {
     }
 
     const [ requestType, successType, failureType ] = types
-    next(actionWith({ type: requestType }))
+    next(actionWith({type: requestType}))
 
     return callApi(endpoint).then(
-            response => next(actionWith({
+        response => next(actionWith({
             response,
             type: successType
         })),
-            error => next(actionWith({
+        error => next(actionWith({
             type: failureType,
-            error: error.message || 'Something bad happened'
+            error: error
         }))
     )
     // check to see if this middleware should handle the action
