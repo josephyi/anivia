@@ -16,18 +16,18 @@ defmodule Anivia.ApiController do
          _ ->
            summoner = response[canonical_name]
 
-           current_game_task = Task.async(fn -> Viktor.current_game(region, summoner["id"])  end)
-           ranked_stats_task = Task.async(fn -> Viktor.ranked_stats(region, summoner["id"])["champions"] end)
+           current_game_task = Task.async(fn -> Viktor.current_game(region, summoner["id"]) end)
+           ranked_stats_task = Task.async(fn -> Viktor.ranked_stats(region, summoner["id"]) end)
            recent_games_task = Task.async(fn -> Viktor.recent_games(region, summoner["id"]) end)
 
-          {summoner_ranked_stats, champion_ranked_stats} = Task.await(ranked_stats_task)
+          {summoner_ranked_stats, champion_ranked_stats} = Task.await(ranked_stats_task)["champions"]
           |> Map.new(&{Integer.to_string(&1["id"]), &1["stats"]})
           |> Map.pop("0")
 
           rankedStats = Map.keys(champion_ranked_stats) |> Enum.map(&(Map.merge(champion_ranked_stats[&1], @static_champ[&1])))
           recentGames = Task.await(recent_games_task)["games"]
 
-          result =  %{ region => %{ canonical_name => %{ "summoner" => response[canonical_name] , "rankedStats" => rankedStats } } }
+          result =  %{ region => %{ canonical_name => %{ "summoner" => response[canonical_name] , "rankedStats" => rankedStats, "aggregateRankedStats" => summoner_ranked_stats } } }
 
 
       json conn, result

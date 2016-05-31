@@ -21,8 +21,8 @@ function renderRankedStatsRow(champion) {
         <td>{champion.totalSessionsWon}</td>
         <td>{champion.totalSessionsLost}</td>
         <td>{`${Math.round(champion.totalSessionsWon / champion.totalSessionsPlayed * 100)}%`}</td>
-        <td>{`${(champion.totalChampionKills/champion.totalSessionsPlayed).toFixed(2)}/${(champion.totalDeathsPerSession/champion.totalSessionsPlayed).toFixed(2)}/${(champion.totalAssists/champion.totalSessionsPlayed).toFixed(2)}`}
-            {champion.totalDeathsPerSession > 0 ? ((champion.totalChampionKills + champion.totalAssists) / champion.totalDeathsPerSession).toFixed(2) : "Perfect"}</td>
+        <td className="text-center">{`${(champion.totalChampionKills/champion.totalSessionsPlayed).toFixed(2)}/${(champion.totalDeathsPerSession/champion.totalSessionsPlayed).toFixed(2)}/${(champion.totalAssists/champion.totalSessionsPlayed).toFixed(2)}`}
+            <br />{champion.totalDeathsPerSession > 0 ? ((champion.totalChampionKills + champion.totalAssists) / champion.totalDeathsPerSession).toFixed(2) : "Perfect"}</td>
         <td>{Math.round(champion.totalMinionKills / champion.totalSessionsPlayed)}</td>
     </tr>)
 }
@@ -37,10 +37,17 @@ class SummonerPage extends Component {
     }
 
     render() {
-        const {summoner, rankedStats} = this.props
+        const {summoner, rankedStats, aggregateRankedStats} = this.props
         return (
             <div>
                 <h1>{summoner.name}</h1>
+                <img src={`http://ddragon.leagueoflegends.com/cdn/6.10.1/img/profileicon/${summoner.profileIconId}.png`} />
+                <h2>Ranked: {aggregateRankedStats.totalSessionsWon}W-{aggregateRankedStats.totalSessionsLost}L</h2>
+                <h2>Ranked KDA: {(aggregateRankedStats.totalChampionKills/aggregateRankedStats.totalSessionsPlayed).toFixed(2)}
+                    /{(aggregateRankedStats.totalDeathsPerSession/aggregateRankedStats.totalSessionsPlayed).toFixed(2)}
+                    /{(aggregateRankedStats.totalAssists/aggregateRankedStats.totalSessionsPlayed).toFixed(2)},
+                    {' '}{((aggregateRankedStats.totalChampionKills + aggregateRankedStats.totalAssists) / aggregateRankedStats.totalDeathsPerSession).toFixed(2)}:1
+                </h2>
                 <Table striped hover>
                     <thead>
                     <tr>
@@ -48,7 +55,7 @@ class SummonerPage extends Component {
                         <th>Win</th>
                         <th>Loss</th>
                         <th>Win %</th>
-                        <th>KDA</th>
+                        <th className="text-center">KDA</th>
                         <th>Avg CS</th>
                     </tr>
                     </thead>
@@ -74,13 +81,14 @@ function mapStateToProps(state, ownProps) {
     if (state.entities[region] === undefined || state.entities[region][summonerName] === undefined)
         return {region, summoner: {}, summonerName, rankedStats: []}
 
-    const {summoner, rankedStats, recentGames} = state.entities[region][summonerName]
+    const {summoner, rankedStats, recentGames, aggregateRankedStats} = state.entities[region][summonerName]
     return {
         region,
         summonerName,
         summoner,
         rankedStats,
-        recentGames
+        recentGames,
+        aggregateRankedStats
     }
 }
 
