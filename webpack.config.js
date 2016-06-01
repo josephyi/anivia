@@ -14,7 +14,15 @@ var plugins = [
   new webpack.NoErrorsPlugin(),
   new webpack.DefinePlugin({
     __PROD: prod,
-    __DEV: env === 'dev'
+    __DEV: env === 'dev',
+    'process.env':{
+        'NODE_ENV': JSON.stringify('production')
+    }
+  }),
+  new webpack.optimize.UglifyJsPlugin({
+    compress:{
+      warnings: true
+    }
   })
 ]
 
