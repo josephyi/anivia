@@ -4,7 +4,7 @@ import {reducer as formReducer} from 'redux-form'
 import { routerReducer as routing } from 'react-router-redux'
 import merge from 'lodash/merge'
 
-function entities(state = {summoner: {name: ""}, rankedStats: []}, action) {
+function entities(state = {summoner: {name: ""}, rankedStats: [], aggregateRankedStats: {}}, action) {
     if(action.response) {
         return merge({}, state, action.response)
     } else {
@@ -13,7 +13,6 @@ function entities(state = {summoner: {name: ""}, rankedStats: []}, action) {
 }
 
 const reducers = {
-    // ... your other reducers here ...
     entities,
     form: formReducer,
     errorMessage,

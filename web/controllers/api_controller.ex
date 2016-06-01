@@ -13,30 +13,56 @@ defmodule Anivia.ApiController do
            conn
            |> put_status(response["status"] |> Map.fetch!("status_code"))
            |> render(Anivia.ErrorView, "errors.json", response: response)
-         _ ->
-           summoner = response[canonical_name]
+         %{^canonical_name => summoner_response} ->
+           result = %{ "summoner" => summoner_response}
+           |> add_game_data(region, summoner_response)
+           |> add_ranked_data(region, summoner_response)
 
-           current_game_task = Task.async(fn -> Viktor.current_game(region, summoner["id"]) end)
-           ranked_stats_task = Task.async(fn -> Viktor.ranked_stats(region, summoner["id"]) end)
-           recent_games_task = Task.async(fn -> Viktor.recent_games(region, summoner["id"]) end)
-
-          {summoner_ranked_stats, champion_ranked_stats} = Task.await(ranked_stats_task)["champions"]
-          |> Map.new(&{Integer.to_string(&1["id"]), &1["stats"]})
-          |> Map.pop("0")
-
-          rankedStats = Map.keys(champion_ranked_stats) |> Enum.map(&(Map.merge(champion_ranked_stats[&1], @static_champ[&1])))
-          recentGames = Task.await(recent_games_task)["games"]
-
-          result =  %{ region => %{ canonical_name => %{ "summoner" => response[canonical_name] , "rankedStats" => rankedStats, "aggregateRankedStats" => summoner_ranked_stats } } }
-
-
-      json conn, result
-  end
-
-
+           json conn, %{ region => %{canonical_name => result} }
+      end
   end
 
   def canonicalize(name) do
     name |> String.downcase |> String.replace(" ", "")
+  end
+
+  def add_game_data(map, region, summoner) do
+    current_game_task = Task.async(fn -> Viktor.current_game(region, summoner["id"]) end)
+    recent_games_task = Task.async(fn -> Viktor.recent_games(region, summoner["id"]) end)
+
+    map
+    |> Map.put("recentGames", api_task_handler(recent_games_task, "games"))
+    |> Map.put("currentGame", api_task_handler(current_game_task, nil))
+  end
+
+  def add_ranked_data(map, region, summoner) do
+    if summoner["summonerLevel"] == 30 do
+      ranked_stats_task = Task.async(fn -> Viktor.ranked_stats(region, summoner["id"]) end)
+      league_entry_task = Task.async(fn -> Viktor.Operation.League.by_summoner_entry(region, summoner["id"]) end)
+
+      {summoner_ranked_stats, champion_ranked_stats} = api_task_handler(ranked_stats_task, "champions")
+      |> Map.new(&{Integer.to_string(&1["id"]), &1["stats"]})
+      |> Map.pop("0")
+
+      rankedStats = Map.keys(champion_ranked_stats) |> Enum.map(&(Map.merge(champion_ranked_stats[&1], @static_champ[&1])))
+
+      map
+      |> Map.put("rankedStats", rankedStats)
+      |> Map.put("aggregateRankedStats", summoner_ranked_stats)
+      |> Map.put("rankedLeague", api_task_handler(league_entry_task, Integer.to_string(summoner["id"])))
+    else
+      map |> Map.merge(%{"rankedStats" => [], "aggregateRankedStats" => [], "rankedLeague" => []})
+    end
+  end
+
+  def api_task_handler(task, key) do
+    case Task.await(task) do
+      %{^key => result} ->
+        result
+      %{"status" => %{"status_code" => status_code, "message" => message}} ->
+        %{"status_code" => status_code, "message" => message}
+      response ->
+        response
+    end
   end
 end

@@ -38,11 +38,12 @@ class SummonerPage extends Component {
 
     render() {
         const {summoner, rankedStats, aggregateRankedStats} = this.props
+        if(summoner.name) {
         return (
             <div>
-                <h1>{summoner.name}</h1>
-                <img src={`http://ddragon.leagueoflegends.com/cdn/6.10.1/img/profileicon/${summoner.profileIconId}.png`} />
-                <h2>Ranked: {aggregateRankedStats.totalSessionsWon}W-{aggregateRankedStats.totalSessionsLost}L</h2>
+                <h1>{summoner.name || ""}</h1>
+                <img src={`http://ddragon.leagueoflegends.com/cdn/6.10.1/img/profileicon/${summoner.profileIconId || '666'}.png`} />
+                <h2>Ranked: {aggregateRankedStats.totalSessionsWon || '0'}W-{aggregateRankedStats.totalSessionsLost || '0'}L</h2>
                 <h2>Ranked KDA: {(aggregateRankedStats.totalChampionKills/aggregateRankedStats.totalSessionsPlayed).toFixed(2)}
                     /{(aggregateRankedStats.totalDeathsPerSession/aggregateRankedStats.totalSessionsPlayed).toFixed(2)}
                     /{(aggregateRankedStats.totalAssists/aggregateRankedStats.totalSessionsPlayed).toFixed(2)},
@@ -64,14 +65,15 @@ class SummonerPage extends Component {
                     </tbody>
                 </Table>
             </div>
-        )
+        )} else { return (<div>loading...</div>)}
     }
 }
 
 SummonerPage.propTypes = {
     loadSummoner: PropTypes.func.isRequired,
     summoner: PropTypes.object,
-    rankedStats: PropTypes.array.isRequired
+    rankedStats: PropTypes.array.isRequired,
+    aggregateRankedStats: PropTypes.object
 }
 
 function mapStateToProps(state, ownProps) {
@@ -79,13 +81,14 @@ function mapStateToProps(state, ownProps) {
     const summonerName = ownProps.params.summonerName
 
     if (state.entities[region] === undefined || state.entities[region][summonerName] === undefined)
-        return {region, summoner: {}, summonerName, rankedStats: []}
+        return {region, summoner: {}, summonerName, rankedStats: [], aggregateRankedStats: {}}
 
-    const {summoner, rankedStats, recentGames, aggregateRankedStats} = state.entities[region][summonerName]
+    const {summoner, rankedLeague, rankedStats, recentGames, aggregateRankedStats} = state.entities[region][summonerName]
     return {
         region,
         summonerName,
         summoner,
+        rankedLeague,
         rankedStats,
         recentGames,
         aggregateRankedStats
