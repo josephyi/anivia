@@ -54,7 +54,9 @@ module.exports = {
                 test: /\.json?$/,
                 loaders: ['json'],
                 exclude: path.resolve(__dirname, 'node_modules')
-            }
+            },
+            { test: /\.css$/, exclude: /\.useable\.css$/, loader: "style!css" },
+            { test: /\.useable\.css$/, loader: "style/useable!css" }
         ]
     }
 }

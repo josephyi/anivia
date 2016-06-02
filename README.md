@@ -2,9 +2,9 @@
 
 > "Let's soar."
 
-Anivia is a single page application using player data from the Riot Games League of Legends API. The goal of the project is to make something useful for players and developers alike. 
+Anivia is a single page application using player data from the Riot Games League of Legends API. The goal of the project is to make something useful for players and developers alike.
 
-# Tech Stack
+## Tech Stack
 
 > "What change will this wind bring?"
 
@@ -12,11 +12,29 @@ Anivia is a single page application using player data from the Riot Games League
   * App Server: Phoenix Framework
   * Database: NONE
   * Frontend Stack: React, Redux, Webpack
- 
-I develop and deploy Anivia from Docker, but that's optional. 
+
+I develop and deploy Anivia from Docker, but that's optional.
 
 Live demo here [http://anivia.gosu.io]
 
+## Docker Setup
+
+### In development
+
+```
+# From project root, create image
+docker build -t anivia .
+
+# Start a container and enter shell
+docker run -it -v $(pwd):/app -p 4000:4000 -p 4001:4001 -e MIX_ENV=dev -e RIOT_API_KEY=[YOUR_KEY_HERE] --rm anivia sh
+
+# Install dependencies
+npm install
+mix deps.get
+
+# Start phoenix
+mix phoenix.server
+```
 ## Learn more
 
   * Official website: http://www.phoenixframework.org/

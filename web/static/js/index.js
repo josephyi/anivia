@@ -17,7 +17,7 @@ const history = syncHistoryWithStore(browserHistory, store)
 
 render(<AppContainer>
     <Root store={store} history={history} />
-</AppContainer>, rootEl);
+</AppContainer>, rootEl)
 
 if (module.hot) {
     module.hot.accept('./containers/Root', () => {
@@ -29,6 +29,6 @@ if (module.hot) {
                 <NextApp store={store} history={history} />
             </AppContainer>,
             rootEl
-        );
-    });
+        )
+    })
 }
