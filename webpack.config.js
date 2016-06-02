@@ -49,6 +49,11 @@ module.exports = {
                 test: /\.jsx?$/,
                 loaders: ['babel'],
                 exclude: path.resolve(__dirname, 'node_modules')
+            },
+            {
+                test: /\.json?$/,
+                loaders: ['json'],
+                exclude: path.resolve(__dirname, 'node_modules')
             }
         ]
     }

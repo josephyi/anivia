@@ -4,7 +4,9 @@ import {reducer as formReducer} from 'redux-form'
 import { routerReducer as routing } from 'react-router-redux'
 import merge from 'lodash/merge'
 
-function entities(state = {summoner: {name: ""}, rankedStats: [], aggregateRankedStats: {}}, action) {
+const champions = require('../data/champ_images.json');
+
+function entities(state = {summoner: {name: ""}, rankedStats: [], aggregateRankedStats: {}, champions: champions}, action) {
     if(action.response) {
         return merge({}, state, action.response)
     } else {
