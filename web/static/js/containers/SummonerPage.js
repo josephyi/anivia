@@ -15,7 +15,7 @@ function loadData(props) {
 
 function renderRankedStatsRow(champion) {
     return (<tr key={champion.id}>
-        <td><img width={16} height={16}
+        <td className={style.test}><img width={16} height={16}
                  src={`http://ddragon.leagueoflegends.com/cdn/6.10.1/img/champion/${champion.image.full}`}/>{' '}   {champion.name}
         </td>
         <td>{champion.totalSessionsWon}</td>

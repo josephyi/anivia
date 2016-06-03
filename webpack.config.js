@@ -9,29 +9,37 @@ var entry = './web/static/js/index.js'
 var hot = 'webpack-hot-middleware/client?path=' +
     publicPath + '__webpack_hmr'
 
+var ExtractTextPlugin = require('extract-text-webpack-plugin')
+
 var plugins = [
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.NoErrorsPlugin(),
-    new webpack.DefinePlugin({
-        __PROD: prod,
-        __DEV: env === 'dev',
-        'process.env': {
-            'NODE_ENV': JSON.stringify('production')
-        }
-    })
 ]
 
 if (env === 'dev') {
     plugins.push(new webpack.HotModuleReplacementPlugin())
+    new webpack.DefinePlugin({
+        __DEV: env === 'dev'
+    })
 }
 
-if (env === 'prod') {
+if (prod) {
     plugins.push(
         new webpack.optimize.UglifyJsPlugin({
             compress: {
                 warnings: true
             }
-        }))
+        }),
+        new webpack.DefinePlugin({
+            __PROD: prod,
+            'process.env': {
+                'NODE_ENV': JSON.stringify('production')
+            }
+        }),
+        new ExtractTextPlugin('styles.css', {
+            publicPath: path.resolve(__dirname) + '/priv/static/css',
+            allChunks: true})
+    )
 }
 
 module.exports = {
@@ -55,8 +63,10 @@ module.exports = {
                 loaders: ['json'],
                 exclude: path.resolve(__dirname, 'node_modules')
             },
-            { test: /\.css$/, exclude: /\.useable\.css$/, loader: "style!css" },
-            { test: /\.useable\.css$/, loader: "style/useable!css" }
+            { 
+                test: /\.css$/,
+                loader: prod ? ExtractTextPlugin.extract('style', 'css?modules') : 'style!css?modules'
+            }
         ]
     }
 }
