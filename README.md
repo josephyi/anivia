@@ -15,7 +15,11 @@ Anivia is a single page application using player data from the Riot Games League
 
 I develop and deploy Anivia from Docker, but that's optional.
 
-Live demo here [http://anivia.gosu.io]
+Live demo here http://anivia.gosu.io
+
+## Prerequisites
+
+Sign up for a API Key at https://developer.riotgames.com/
 
 ## Docker Setup
 
