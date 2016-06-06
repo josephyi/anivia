@@ -3,6 +3,7 @@ import {render} from 'react-dom'
 import {loadSummoner} from '../actions'
 import {connect} from 'react-redux'
 import {Grid, Row, Table} from 'react-bootstrap'
+import champ_icons from './StaticChampionSprites.css'
 
 function loadData(props) {
     const {region, summonerName} = props
@@ -15,8 +16,7 @@ function loadData(props) {
 
 function renderRankedStatsRow(champion) {
     return (<tr key={champion.id}>
-        <td className={style.test}><img width={16} height={16}
-                 src={`http://ddragon.leagueoflegends.com/cdn/6.10.1/img/champion/${champion.image.full}`}/>{' '}   {champion.name}
+        <td><i className={champ_icons["champion-" + champion.id]}></i>{' '}{champion.name}
         </td>
         <td>{champion.totalSessionsWon}</td>
         <td>{champion.totalSessionsLost}</td>

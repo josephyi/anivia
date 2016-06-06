@@ -39,6 +39,14 @@ mix deps.get
 # Start phoenix
 mix phoenix.server
 ```
+
+## Mix Tasks
+### Static Asset Generation
+```
+# Generates CSS for champion portraits
+mix anivia.static_content
+```
+
 ## Learn more
 
   * Official website: http://www.phoenixframework.org/
