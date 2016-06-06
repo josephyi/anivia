@@ -2,8 +2,6 @@ defmodule Anivia.ApiController do
   use Anivia.Web, :controller
   @moduledoc false
 
-  @static_champ File.read!("data/champ_images.json") |> Poison.decode!
-
   def summoner(conn, %{"region" => region, "summoner_name" => summoner_name}) do
       canonical_name = canonicalize(summoner_name)
 
@@ -44,10 +42,8 @@ defmodule Anivia.ApiController do
       |> Map.new(&{Integer.to_string(&1["id"]), &1["stats"]})
       |> Map.pop("0")
 
-      rankedStats = Map.keys(champion_ranked_stats) |> Enum.map(&(Map.merge(champion_ranked_stats[&1], @static_champ[&1])))
-
       map
-      |> Map.put("rankedStats", rankedStats)
+      |> Map.put("rankedStats", Enum.map(champion_ranked_stats, fn {k, v} -> Map.put(v, "id", k) end))
       |> Map.put("aggregateRankedStats", summoner_ranked_stats)
       |> Map.put("rankedLeague", api_task_handler(league_entry_task, Integer.to_string(summoner["id"])))
     else

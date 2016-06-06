@@ -4,6 +4,7 @@ import {loadSummoner} from '../actions'
 import {connect} from 'react-redux'
 import {Grid, Row, Table} from 'react-bootstrap'
 import champ_icons from './StaticChampionSprites.css'
+import champions from '../data/champ_id_to_name.json'
 
 function loadData(props) {
     const {region, summonerName} = props
@@ -16,7 +17,7 @@ function loadData(props) {
 
 function renderRankedStatsRow(champion) {
     return (<tr key={champion.id}>
-        <td><i className={champ_icons["champion-" + champion.id]}></i>{' '}{champion.name}
+        <td><i className={champ_icons["champion-" + champion.id]}></i>{' '}{champions[champion.id]}
         </td>
         <td>{champion.totalSessionsWon}</td>
         <td>{champion.totalSessionsLost}</td>
@@ -83,7 +84,7 @@ function mapStateToProps(state, ownProps) {
     if (state.entities[region] === undefined || state.entities[region][summonerName] === undefined)
         return {region, summoner: {}, summonerName, rankedStats: [], aggregateRankedStats: {}}
 
-    const {summoner, rankedLeague, rankedStats, recentGames, aggregateRankedStats} = state.entities[region][summonerName]
+    const {summoner, rankedLeague, rankedStats, recentGames, aggregateRankedStats, champions} = state.entities[region][summonerName]
     return {
         region,
         summonerName,
@@ -91,7 +92,8 @@ function mapStateToProps(state, ownProps) {
         rankedLeague,
         rankedStats,
         recentGames,
-        aggregateRankedStats
+        aggregateRankedStats,
+        champions
     }
 }
 

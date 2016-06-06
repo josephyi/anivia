@@ -29,5 +29,7 @@ defmodule Mix.Tasks.Anivia.StaticContent do
     end)
     File.close(file)
 
+    champ_id_json = champs |> Enum.map(fn {k, v} -> {k, Map.drop(v, ["id", "image", "title"])["name"]} end) |> Map.new |> Poison.encode!
+    File.write!("web/static/js/data/champ_id_to_name.json", champ_id_json)
   end
 end
