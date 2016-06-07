@@ -43,7 +43,7 @@ defmodule Anivia.ApiController do
       |> Map.pop("0")
 
       map
-      |> Map.put("rankedStats", Enum.map(champion_ranked_stats, fn {k, v} -> Map.put(v, "id", k) end))
+      |> Map.put("rankedStats", Enum.map(champion_ranked_stats, fn {k, v} -> Map.put(v, "id", k) end) |> Enum.sort(&(&1["totalSessionsPlayed"] > &2["totalSessionsPlayed"])))
       |> Map.put("aggregateRankedStats", summoner_ranked_stats)
       |> Map.put("rankedLeague", api_task_handler(league_entry_task, Integer.to_string(summoner["id"])))
     else
