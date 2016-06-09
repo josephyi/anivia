@@ -38,7 +38,7 @@ defmodule Anivia.ApiController do
       ranked_stats_task = Task.async(fn -> Viktor.ranked_stats(region, summoner["id"]) end)
       league_entry_task = Task.async(fn -> Viktor.Operation.League.by_summoner_entry(region, summoner["id"]) end)
 
-      {summoner_ranked_stats, champion_ranked_stats} = api_task_handler(ranked_stats_task, "champions")
+      { summoner_ranked_stats, champion_ranked_stats } = api_task_handler(ranked_stats_task, "champions")
       |> Map.new(&{Integer.to_string(&1["id"]), &1["stats"]})
       |> Map.pop("0")
 
