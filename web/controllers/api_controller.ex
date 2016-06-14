@@ -2,6 +2,8 @@ defmodule Anivia.ApiController do
   use Anivia.Web, :controller
   @moduledoc false
 
+  @current_game_test File.read!("web/current_game_test.json") |> Poison.decode!
+
   def summoner(conn, %{"region" => region, "summoner_name" => summoner_name}) do
       canonical_name = canonicalize(summoner_name)
 
@@ -12,11 +14,18 @@ defmodule Anivia.ApiController do
            |> put_status(response["status"] |> Map.fetch!("status_code"))
            |> render(Anivia.ErrorView, "errors.json", response: response)
          %{^canonical_name => summoner_response} ->
-           result = %{ "summoner" => summoner_response}
-           |> add_game_data(region, summoner_response)
-           |> add_ranked_data(region, summoner_response)
+           current_game = @current_game_test #Task.async(fn -> Viktor.current_game(region, summoner_response["id"]) end)
+           names = Enum.map(current_game["participants"], &(canonicalize(&1["summonerName"]))) |> Enum.join(",")
+           ids = Enum.map(current_game["participants"], &(&1["summonerId"])) |> Enum.join(",")
+           summoners = Viktor.Operation.Summoner.by_name("na", names) |> Map.put(canonical_name, summoner_response)
 
-           json conn, %{ region => %{canonical_name => result} }
+           league_entry_task = Task.async(fn -> Viktor.Operation.League.by_summoner_entry(region, ids) end)
+           #result = %{ "summoner" => summoner_response}
+           #|> add_game_data(region, summoner_response)
+           #|> add_ranked_data(region, summoner_response)
+
+           #json conn, %{ region => %{canonical_name => result} }
+           json conn, %{ region => %{ "summoners" => summoners, "currentGame" => current_game, "rankedLeagues" => Task.await(league_entry_task) } }
       end
   end
 
@@ -25,12 +34,11 @@ defmodule Anivia.ApiController do
   end
 
   def add_game_data(map, region, summoner) do
-    current_game_task = Task.async(fn -> Viktor.current_game(region, summoner["id"]) end)
     recent_games_task = Task.async(fn -> Viktor.recent_games(region, summoner["id"]) end)
 
     map
     |> Map.put("recentGames", api_task_handler(recent_games_task, "games"))
-    |> Map.put("currentGame", api_task_handler(current_game_task, nil))
+    |> Map.put("currentGame", @current_game_test)  #api_task_handler(current_game_task, nil))
   end
 
   def add_ranked_data(map, region, summoner) do
@@ -51,7 +59,7 @@ defmodule Anivia.ApiController do
     end
   end
 
-  def api_task_handler(task, key) do
+  def api_task_handler(task, key \\ nil) do
     case Task.await(task) do
       %{^key => result} ->
         result

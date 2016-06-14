@@ -40,7 +40,7 @@ defmodule Anivia.Mixfile do
      {:gettext, "~> 0.9"},
      {:cowboy, "~> 1.0"},
      {:poison, "~> 2.1.0", override: true},
-     {:viktor, "~> 0.1.0"}]
+     {:viktor, "~> 0.1.1"}]
   end
 
   # Aliases are shortcut or tasks specific to the current project.

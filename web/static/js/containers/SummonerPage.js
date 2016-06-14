@@ -58,8 +58,9 @@ function mapStateToProps(state, ownProps) {
     if (state.entities[region] === undefined || state.entities[region][summonerName] === undefined)
         return {region, summoner: {}, summonerName, rankedStats: [], aggregateRankedStats: {}}
 
-    const {summoner, rankedLeague, rankedStats, recentGames, aggregateRankedStats} = state.entities[region][summonerName]
+    const {currentGame, summoner, rankedLeague, rankedStats, recentGames, aggregateRankedStats} = state.entities[region][summonerName]
     return {
+        currentGame,
         region,
         summonerName,
         summoner,
