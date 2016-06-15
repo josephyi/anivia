@@ -36,7 +36,7 @@ defmodule Anivia.ApiController do
 
         %{
           "summoners" => %{canonicalize(summoner["name"]) => summoner},
-          "currentGamesMap" => %{Integer.to_string(summoner["id"]) => %{}},
+          "currentGamesMap" => %{Integer.to_string(summoner["id"]) => -1},
           "currentGames" => %{},
           "rankedLeagues" => Task.await(league_entry_task)
         } |> Map.merge(Task.await(ranked_data_task)) |> Map.merge(Task.await(recent_games_task))

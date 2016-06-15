@@ -21,7 +21,7 @@ class App extends Component {
 
     // handle new search
     componentDidUpdate(prevProps) {
-
+        
     }
 
     handleAlertDismiss() {

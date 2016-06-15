@@ -19,7 +19,7 @@ const renderRecentGames = rows => (
 )
 
 const renderRecentGame = row => (
-    <tr className={row['stats']['win'] === true ? 'success' : 'danger'}>
+    <tr className={row['stats']['win'] === true ? 'success' : 'danger'} key={row.gameId}>
         <td><i className={champ_icons["champion-" + row.championId]}></i>{' '}{champions[row.championId]}</td>
         <td>{gameLabel(row['subType'])}</td>
         <td>{playerRoleLabel(row['stats']['playerRole'])} {playerPositionLabel(row['stats']['playerPosition'])}</td>

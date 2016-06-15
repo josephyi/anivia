@@ -5,6 +5,7 @@ import {connect} from 'react-redux'
 import {Grid, Row, Table} from 'react-bootstrap'
 import RankedStats from '../components/RankedStats'
 import RecentGames from '../components/RecentGames'
+import CurrentGame from '../components/CurrentGame'
 
 function loadData(props) {
     const {region, summonerName} = props
@@ -25,8 +26,8 @@ class SummonerPage extends Component {
     }
 
     render() {
-        const {summoner, recentGames, rankedStats, aggregateRankedStats} = this.props
-        if(summoner && summoner.name) {
+        const {summoner, currentGame, recentGames, rankedStats, aggregateRankedStats, region} = this.props
+        if(summoner && summoner.name && aggregateRankedStats) {
         return (
             <div>
                 <h1>{summoner.name || ""}</h1>
@@ -37,6 +38,7 @@ class SummonerPage extends Component {
                     /{(aggregateRankedStats.totalAssists/aggregateRankedStats.totalSessionsPlayed).toFixed(2)},
                     {' '}{((aggregateRankedStats.totalChampionKills + aggregateRankedStats.totalAssists) / aggregateRankedStats.totalDeathsPerSession).toFixed(2)}:1
                 </h2>
+                <CurrentGame currentGame={ currentGame } region={region} />
                 <RecentGames recentGames={ recentGames } />
                 <RankedStats rankedStats={ rankedStats } />
             </div>
@@ -47,7 +49,7 @@ class SummonerPage extends Component {
 SummonerPage.propTypes = {
     loadSummoner: PropTypes.func.isRequired,
     summoner: PropTypes.object,
-    rankedStats: PropTypes.array.isRequired,
+    rankedStats: PropTypes.array,
     aggregateRankedStats: PropTypes.object
 }
 
@@ -55,16 +57,25 @@ function mapStateToProps(state, ownProps) {
     const region = ownProps.params.region
     const summonerName = ownProps.params.summonerName
 
+    console.log(region)
+    console.log(summonerName)
+
     const data = state.entities[region]
 
-    if (data === undefined || data["summoners"] === undefined)
+    if (data === undefined || data["summoners"] === undefined || data["summoners"][summonerName] === undefined) {
+        console.log("summoner null wtf")
         return {region, summoner: {}, summonerName, rankedStats: [], aggregateRankedStats: {}}
+    }
+
+
 
     const {summoners, currentGamesMap, currentGames, aggregateRankedStatsData, rankedStatsData, recentGamesData} = data
 
     const summoner = summoners ? summoners[summonerName] : {}
     const currentGameId = summoner && currentGamesMap ? currentGamesMap[summoner.id] : null
     const currentGame = currentGameId ? currentGames[currentGameId] : {}
+
+    console.log(summoner)
 
     return {
         currentGame,

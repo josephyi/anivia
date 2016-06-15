@@ -1,6 +1,6 @@
 import * as ActionTypes from '../actions'
 import { combineReducers } from 'redux'
-import {reducer as formReducer} from 'redux-form'
+import { reducer as form} from 'redux-form'
 import { routerReducer as routing } from 'react-router-redux'
 import merge from 'lodash/merge'
 
@@ -16,7 +16,7 @@ function entities(state = {champions: champions}, action) {
 
 const reducers = {
     entities,
-    form: formReducer,
+    form,
     errorMessage,
     routing
 };
