@@ -21,7 +21,7 @@ class SummonerPage extends Component {
     }
 
     componentWillMount() {
-        loadData(this.props)
+        loadData(this.props) 
     }
 
     render() {
@@ -55,19 +55,27 @@ function mapStateToProps(state, ownProps) {
     const region = ownProps.params.region
     const summonerName = ownProps.params.summonerName
 
-    if (state.entities[region] === undefined || state.entities[region][summonerName] === undefined)
+    const data = state.entities[region]
+
+    if (data === undefined || data["summoners"] === undefined)
         return {region, summoner: {}, summonerName, rankedStats: [], aggregateRankedStats: {}}
 
-    const {currentGame, summoner, rankedLeague, rankedStats, recentGames, aggregateRankedStats} = state.entities[region][summonerName]
+    const {summoners, currentGamesMap, currentGames, aggregateRankedStatsData, rankedStatsData, recentGamesData} = data
+
+    const summoner = summoners ? summoners[summonerName] : {}
+    const currentGameId = summoner && currentGamesMap ? currentGamesMap[summoner.id] : null
+    const currentGame = currentGameId ? currentGames[currentGameId] : {}
+
+
     return {
         currentGame,
         region,
         summonerName,
         summoner,
-        rankedLeague,
-        rankedStats,
-        recentGames,
-        aggregateRankedStats
+        // rankedLeague,
+        rankedStats: summoner ? rankedStatsData[summoner.id] : [],
+        recentGames: summoner ? recentGamesData[summoner.id] : [],
+        aggregateRankedStats: summoner ? aggregateRankedStatsData[summoner.id] : {}
     }
 }
 

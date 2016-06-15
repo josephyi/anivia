@@ -6,7 +6,7 @@ import merge from 'lodash/merge'
 
 const champions = require('../data/champ_id_to_name.json');
 
-function entities(state = {summoner: {name: ""}, rankedStats: [], aggregateRankedStats: {}, champions: champions}, action) {
+function entities(state = {champions: champions}, action) {
     if(action.response) {
         return merge({}, state, action.response)
     } else {
