@@ -26,7 +26,7 @@ class SummonerPage extends Component {
 
     render() {
         const {summoner, recentGames, rankedStats, aggregateRankedStats} = this.props
-        if(summoner.name) {
+        if(summoner && summoner.name) {
         return (
             <div>
                 <h1>{summoner.name || ""}</h1>
@@ -65,7 +65,6 @@ function mapStateToProps(state, ownProps) {
     const summoner = summoners ? summoners[summonerName] : {}
     const currentGameId = summoner && currentGamesMap ? currentGamesMap[summoner.id] : null
     const currentGame = currentGameId ? currentGames[currentGameId] : {}
-
 
     return {
         currentGame,
