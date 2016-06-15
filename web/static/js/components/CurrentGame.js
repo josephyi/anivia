@@ -3,8 +3,7 @@ import { Link } from 'react-router'
 
 const CurrentGame = ({currentGame, region}) => {
     if(currentGame) {
-        console.log(currentGame)
-        console.log(region)
+
     return (
         <div>
             { renderParticipants(region, currentGame.participants)}
@@ -19,7 +18,6 @@ const renderParticipants = (region, rows) => (
 const renderParticipant = (region, row) => (
     <div key={row.summonerId}>
         <Link to={`/${region}/${canonicalize(row.summonerName)}`}>{row.summonerName}</Link>
-        <a href={`/${region}/${canonicalize(row.summonerName)}`}>{row.summonerName}</a>
     </div>
 )
 

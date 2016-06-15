@@ -1,12 +1,12 @@
 import React from 'react'
-import { Table } from 'react-bootstrap'
+import { Table, Label } from 'react-bootstrap'
 import champ_icons from '../css/StaticChampionSprites.css'
 import champions from '../data/champ_id_to_name.json'
 import TimeAgo from 'react-timeago'
 
 const RecentGames = props => {
     return(
-        <Table>
+        <Table bordered striped>
             <tbody>
             { renderRecentGames(props.recentGames) }
             </tbody>
@@ -19,13 +19,13 @@ const renderRecentGames = rows => (
 )
 
 const renderRecentGame = row => (
-    <tr className={row['stats']['win'] === true ? 'success' : 'danger'} key={row.gameId}>
+    <tr key={row.gameId}>
         <td><i className={champ_icons["champion-" + row.championId]}></i>{' '}{champions[row.championId]}</td>
         <td>{gameLabel(row['subType'])}</td>
         <td>{playerRoleLabel(row['stats']['playerRole'])} {playerPositionLabel(row['stats']['playerPosition'])}</td>
         <td>{row['stats']['championsKilled'] || '0'}/{row['stats']['numDeaths'] || '0'}/{row['stats']['assists'] || '0'}</td>
-        <td>{timeLabel(row['stats']['timePlayed'])}</td>
-        <td><TimeAgo date={row['createDate']} /></td>
+        <td>{timeLabel(row['stats']['timePlayed'])} </td>
+        <td><Label bsStyle={row['stats']['win'] === true ? 'success' : 'danger'}><TimeAgo date={row['createDate']} /></Label></td>
     </tr>
 )
 
@@ -45,6 +45,8 @@ function gameLabel(subType) {
             return 'ARAM'
         case 'BOT':
             return 'Bots'
+        case 'ODIN_UNRANKED' :
+            return 'Dominion'
         default:
             return subType
     }

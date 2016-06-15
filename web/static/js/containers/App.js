@@ -19,11 +19,6 @@ class App extends Component {
         browserHistory.push(`/${data.region}/${data.summonerName.toLowerCase()}`)
     }
 
-    // handle new search
-    componentDidUpdate(prevProps) {
-        
-    }
-
     handleAlertDismiss() {
         this.props.resetErrorMessage()
     }
@@ -69,8 +64,7 @@ function mapStateToProps(state, ownProps) {
     if (state.entities[region] === undefined)
       return { errorMessage: state.errorMessage, searchForm, summoner: {} }
 
-    const summoner = state.entities[region][summonerName]
-
+    const summoner = state.entities[region]["summoners"][summonerName]
     return {
         errorMessage: state.errorMessage,
         summoner: summoner ? summoner["summoner"] || {} : {},
