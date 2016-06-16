@@ -46,9 +46,10 @@ class App extends Component {
                             <SearchForm onSubmit={this.handleSubmit} />
                         </div>
                     </div>
+                </div>
                 {this.renderErrorMessage()}
                 {this.props.children}
-                </div>
+
             </div>
 
         )

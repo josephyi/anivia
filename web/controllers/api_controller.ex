@@ -14,7 +14,7 @@ defmodule Anivia.ApiController do
            |> put_status(response["status"] |> Map.fetch!("status_code"))
            |> render(Anivia.ErrorView, "errors.json", response: response)
          %{^canonical_name => summoner_response} ->
-           json conn, profile(region, summoner_response) |> wrap_response(region)
+           json conn, summoner_profile(region, summoner_response) |> wrap_response(region)
       end
   end
 
@@ -25,7 +25,7 @@ defmodule Anivia.ApiController do
   end
 
 
-  def profile(region, summoner) do
+  def summoner_profile(region, summoner) do
     current_game = Viktor.current_game(region, summoner["id"])
     ranked_data_task = Task.async(fn -> ranked_data(region, summoner) end)
     recent_games_task = Task.async(fn -> recent_games_data(region, Integer.to_string(summoner["id"])) end)
@@ -66,8 +66,8 @@ defmodule Anivia.ApiController do
       ranked_response(region, Integer.to_string(summoner["id"]))
     else
       %{
-        "aggregateRankedStatsData" => %{ Integer.to_string(summoner["id"]) => {}},
-        "rankedStatsData" => %{ Integer.to_string(summoner["id"]) => {}}
+        "aggregateRankedStatsData" => %{ Integer.to_string(summoner["id"]) => %{}},
+        "rankedStatsData" => %{ Integer.to_string(summoner["id"]) => %{}}
       }
     end
   end
