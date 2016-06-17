@@ -67,7 +67,7 @@ defmodule Anivia.ApiController do
     else
       %{
         "aggregateRankedStatsData" => %{ Integer.to_string(summoner["id"]) => %{}},
-        "rankedStatsData" => %{ Integer.to_string(summoner["id"]) => %{}}
+        "rankedStatsData" => %{ Integer.to_string(summoner["id"]) => []}
       }
     end
   end

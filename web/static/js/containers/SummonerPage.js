@@ -100,7 +100,6 @@ function mapStateToProps(state, ownProps) {
         region,
         summonerName,
         summoner,
-        // rankedLeague,
         rankedStats: summoner && rankedStatsData[summoner.id] ? rankedStatsData[summoner.id] : [],
         recentGames: summoner && recentGamesData[summoner.id] ? recentGamesData[summoner.id] : [],
         aggregateRankedStats: summoner ? aggregateRankedStatsData[summoner.id] : {},
