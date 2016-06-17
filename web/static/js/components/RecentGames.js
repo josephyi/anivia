@@ -20,7 +20,7 @@ const renderRecentGames = rows => (
 
 const renderRecentGame = row => (
     <tr key={row.gameId}>
-        <td><i className={champ_icons["champion-" + row.championId]}></i>{' '}{champions[row.championId]}</td>
+        <td><i className={champ_icons["champion-" + row.championId]}></i>   </td>
         <td>{gameLabel(row['subType'])}</td>
         <td>{playerRoleLabel(row['stats']['playerRole'])} {playerPositionLabel(row['stats']['playerPosition'])}</td>
         <td>{row['stats']['championsKilled'] || '0'}/{row['stats']['numDeaths'] || '0'}/{row['stats']['assists'] || '0'}</td>

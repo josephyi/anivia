@@ -56,13 +56,11 @@ const winLossFormatter = (cell, row) => (
 )
 
 const championIconFormatter = (cell, row) => (
-    <div>
+
     <div className="clearfix rankedStatsCellName">
         <i className={`${champ_icons["champion-" + cell]}`}></i>
-        <div className={championIcon.nameLabel}>{champions[cell]}</div>
     </div>
 
-        </div>
 )
 
 const renderRankedStatsRows = rows => (

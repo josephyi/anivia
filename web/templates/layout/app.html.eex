@@ -9,6 +9,7 @@
 
     <title>Anivia</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css">
+    <link rel="stylesheet" href="<%= static_path(@conn, "/css/react-bootstrap-table.min.css") %>">
     <%= if Mix.env == :prod do %>
     <link rel="stylesheet" href="<%= static_path(@conn, "/js/styles.css") %>">
     <% end %>

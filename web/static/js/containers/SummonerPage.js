@@ -34,41 +34,36 @@ class SummonerPage extends Component {
     }
 
     render() {
-        const {summoner, currentGame, recentGames, rankedStats, aggregateRankedStats, region} = this.props
+        const {summoner, currentGame, recentGames, rankedLeagues, rankedStats, aggregateRankedStats, region} = this.props
         if (summoner && summoner.name) {
             return (
-                <div>
-                    <Grid>
-                        <Row>
-                            <Col xs={6} md={4} >
-                                <h2>{summoner.name || ""}</h2>
-                                    <img
-                                        src={`http://ddragon.leagueoflegends.com/cdn/6.10.1/img/profileicon/${summoner.profileIconId || '666'}.png`}/>
-                                    <AggregateRankedStats aggregateRankedStats={ aggregateRankedStats }/>
+                <Grid >
+                    <Row>
+                        <Col xs={12} md={12}>
+                        
+                        <CurrentGame currentGame={currentGame} region={region} rankedLeagues={ rankedLeagues } />
+                        
+                            </Col>
+                        </Row>
+                    <Row>
+                        <Col xs={12} md={3}>
+                        <Panel header={<h3>{summoner.name || "loading..."}</h3>}>
+                            <img src={`http://ddragon.leagueoflegends.com/cdn/6.10.1/img/profileicon/${summoner.profileIconId || '666'}.png`}/>
+                                                <AggregateRankedStats aggregateRankedStats={ aggregateRankedStats }/>
 
-                            </Col>
-                            <Col xs={12} md={8}>
-                                <Panel header={<h3>Current</h3>} collapsible defaultExpanded>
-                                  <CurrentGame currentGame={ currentGame } region={region}/>
+                        </Panel>
+                        </Col>
+                        <Col xs={12} md={9}>
+
+                                <Panel header={<h3>Recent Games</h3>} collapsible defaultExpanded>
+                                    <RecentGames fill recentGames={ recentGames }/>
                                 </Panel>
-                            </Col>
-                        </Row>
-                    </Grid>
-                    <Grid>
-                        <Row>
-                            <Col xs={12} md={12}>
-                    <Panel header={<h3>Recent Games</h3>} collapsible defaultExpanded>
-                        <RecentGames fill recentGames={ recentGames }/>
-                    </Panel></Col>
-                        </Row>
-                    </Grid>
-                    <Grid>
-                        <Row>
-                            <Col xs={12} md={12}>
-                    <Panel header={<h3>Ranked Stats</h3>} collapsible defaultExpanded>
-                        <RankedStats fill rankedStats={ rankedStats }/>
-                    </Panel></Col></Row></Grid>
-                </div>
+                                <Panel header={<h3>Ranked Stats</h3>} collapsible defaultExpanded>
+                                    <RankedStats fill rankedStats={ rankedStats }/>
+                                </Panel>
+                        </Col>
+                    </Row>
+                </Grid>
             )
         } else {
             return (<div>loading...</div>)
@@ -93,7 +88,8 @@ function mapStateToProps(state, ownProps) {
         return {region, summoner: {}, summonerName, rankedStats: [], aggregateRankedStats: {}}
     }
 
-    const {summoners, currentGamesMap, currentGames, aggregateRankedStatsData, rankedStatsData, recentGamesData} = data
+    const {summoners, currentGamesMap, currentGames, aggregateRankedStatsData,
+        rankedStatsData, rankedLeagues, recentGamesData} = data
 
     const summoner = summoners ? summoners[summonerName] : {}
     const currentGameId = summoner && currentGamesMap ? currentGamesMap[summoner.id] : null
@@ -107,7 +103,8 @@ function mapStateToProps(state, ownProps) {
         // rankedLeague,
         rankedStats: summoner && rankedStatsData[summoner.id] ? rankedStatsData[summoner.id] : [],
         recentGames: summoner && recentGamesData[summoner.id] ? recentGamesData[summoner.id] : [],
-        aggregateRankedStats: summoner ? aggregateRankedStatsData[summoner.id] : {}
+        aggregateRankedStats: summoner ? aggregateRankedStatsData[summoner.id] : {},
+        rankedLeagues
     }
 }
 
