@@ -40,16 +40,8 @@ class App extends Component {
         return (
             <div>
                 <Header handleSubmit={ this.handleSubmit }/>
-                <div className="container">
-                    <div className="row clearfix">
-                        <div className="col-md-8 col-md-offset-4">
-                           
-                        </div>
-                    </div>
-                </div>
                 {this.renderErrorMessage()}
                 {this.props.children}
-
             </div>
 
         )
