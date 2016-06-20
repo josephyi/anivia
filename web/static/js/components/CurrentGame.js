@@ -38,7 +38,7 @@ const renderParticipant = (region, row, rankedLeagues) => (
     </tr>
 )
 
-function canonicalize(name) {
+export function canonicalize(name) {
     return name.replace(/\s/g, "").toLowerCase()
 }
 

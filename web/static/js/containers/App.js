@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import Header from '../components/Header'
-import SearchForm from '../components/SearchForm'
+import { canonicalize } from '../components/CurrentGame'
 import { loadSummoner, resetErrorMessage  } from '../actions'
 import { browserHistory } from 'react-router'
 import { Alert } from 'react-bootstrap'
@@ -16,7 +16,7 @@ class App extends Component {
     handleSubmit(data, dispatch) {
         this.props.resetErrorMessage()
         this.props.loadSummoner(data.region, data.summonerName)
-        browserHistory.push(`/${data.region}/${data.summonerName.toLowerCase()}`)
+        browserHistory.push(`/${data.region}/${canonicalize(data.summonerName)}`)
     }
 
     handleAlertDismiss() {

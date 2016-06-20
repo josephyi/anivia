@@ -40,7 +40,7 @@ class SummonerPage extends Component {
                 <Grid >
                     <Row>
                         <Col xs={12} md={3}>
-                            <Profile aggregateRankedStats={ aggregateRankedStats } summoner={ summoner } />
+                            <Profile aggregateRankedStats={ aggregateRankedStats } summoner={ summoner } rankedLeagues={ rankedLeagues } />
                         </Col>
                         <Col xs={12} md={9}>
                             <CurrentGame currentGame={currentGame} region={region} rankedLeagues={ rankedLeagues } />
