@@ -51,7 +51,15 @@ class SummonerPage extends Component {
                 </Grid>
             )
         } else {
-            return (<div>loading...</div>)
+            return (
+                <Grid>
+                    <Row>
+                        <Col xs={12} md={12}>
+                        Loading...
+                        </Col>
+                    </Row>
+                </Grid>
+            )
         }
     }
 }

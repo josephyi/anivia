@@ -11,9 +11,8 @@ const Profile = ({summoner, aggregateRankedStats, rankedLeagues}) => {
 
 
                 <ListGroup fill>
-                    <ListGroupItem header="Ranked">{rankedLeagues[summoner.id][0]['tier']}{' '}
-                        {rankedLeagues[summoner.id][0]['entries'][0]['division']}{' '}
-                        ({rankedLeagues[summoner.id][0]['entries'][0]['leaguePoints']} LP)<br />{aggregateRankedStats.totalSessionsWon || '0'}W-{aggregateRankedStats.totalSessionsLost || '0'}L<br/>
+                    <ListGroupItem header="Ranked">{leagueInfo(rankedLeagues, summoner)}
+                        {aggregateRankedStats.totalSessionsWon || '0'}W-{aggregateRankedStats.totalSessionsLost || '0'}L<br/>
                         KDA: {(aggregateRankedStats.totalChampionKills / aggregateRankedStats.totalSessionsPlayed).toFixed(2)}
                         /{(aggregateRankedStats.totalDeathsPerSession / aggregateRankedStats.totalSessionsPlayed).toFixed(2)}
                         /{(aggregateRankedStats.totalAssists / aggregateRankedStats.totalSessionsPlayed).toFixed(2)},
@@ -32,6 +31,19 @@ const Profile = ({summoner, aggregateRankedStats, rankedLeagues}) => {
             </Panel>
         )
     }
+}
+
+// TODO iterate through rankedleagues rather than using first index
+const leagueInfo = (rankedLeagues, summoner) => {
+    if(rankedLeagues[summoner.id]) {
+        return (<span>
+    {rankedLeagues[summoner.id][0]['tier']}{' '}
+    {rankedLeagues[summoner.id][0]['entries'][0]['division']}{' '}
+    ({rankedLeagues[summoner.id][0]['entries'][0]['leaguePoints']} LP)</span>)
+    } else {
+        <span>Not Placed</span>
+    }
+
 }
 
 export default Profile

@@ -29,14 +29,22 @@ const renderParticipant = (region, row, rankedLeagues) => (
     <tr key={row.summonerId}>
         <td><i className={`${champ_icons["champion-" + row.championId]} ${championIcon.medium}`}></i></td>
         <td><Link to={`/${region}/${canonicalize(row.summonerName)}`}>{row.summonerName}</Link></td>
-        <td>
-            {rankedLeagues[row.summonerId][0]['tier']}{' '}
-            {rankedLeagues[row.summonerId][0]['entries'][0]['division']}{' '}
-            ({rankedLeagues[row.summonerId][0]['entries'][0]['leaguePoints']} LP)
+        <td>{leagueInfo(rankedLeagues, row.summonerId)}
         </td>
         <td>{rankedLeagues[row.summonerId][0]['entries'][0]['wins']}W-{rankedLeagues[row.summonerId][0]['entries'][0]['losses']}L</td>
     </tr>
 )
+
+const leagueInfo = (rankedLeagues, summonerId) => {
+    if(rankedLeagues[summonerId]) {
+        return (<span>
+    {rankedLeagues[summonerId][0]['tier']}{' '}
+            {rankedLeagues[summonerId][0]['entries'][0]['division']}{' '}
+            ({rankedLeagues[summonerId][0]['entries'][0]['leaguePoints']} LP)</span>)
+    } else {
+        <span>Not Placed</span>
+    }
+}
 
 export function canonicalize(name) {
     return name.replace(/\s/g, "").toLowerCase()
