@@ -39,11 +39,11 @@ class App extends Component {
     render() {
         return (
             <div>
-                <Header />
+                <Header handleSubmit={ this.handleSubmit }/>
                 <div className="container">
                     <div className="row clearfix">
                         <div className="col-md-8 col-md-offset-4">
-                            <SearchForm onSubmit={this.handleSubmit} />
+                           
                         </div>
                     </div>
                 </div>

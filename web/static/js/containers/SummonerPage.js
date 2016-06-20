@@ -3,7 +3,7 @@ import {render} from 'react-dom'
 import {loadSummoner} from '../actions'
 import {connect} from 'react-redux'
 import {Grid, Row, Col, Table, Panel} from 'react-bootstrap'
-import AggregateRankedStats from '../components/AggregateRankedStats'
+import Profile from '../components/Profile'
 import RankedStats from '../components/RankedStats'
 import RecentGames from '../components/RecentGames'
 import CurrentGame from '../components/CurrentGame'
@@ -39,28 +39,13 @@ class SummonerPage extends Component {
             return (
                 <Grid >
                     <Row>
-                        <Col xs={12} md={12}>
-                        
-                        <CurrentGame currentGame={currentGame} region={region} rankedLeagues={ rankedLeagues } />
-                        
-                            </Col>
-                        </Row>
-                    <Row>
                         <Col xs={12} md={3}>
-                        <Panel header={<h3>{summoner.name || "loading..."}</h3>}>
-                            <img src={`http://ddragon.leagueoflegends.com/cdn/6.10.1/img/profileicon/${summoner.profileIconId || '666'}.png`}/>
-                                                <AggregateRankedStats aggregateRankedStats={ aggregateRankedStats }/>
-
-                        </Panel>
+                            <Profile aggregateRankedStats={ aggregateRankedStats } summoner={ summoner } />
                         </Col>
                         <Col xs={12} md={9}>
-
-                                <Panel header={<h3>Recent Games</h3>} collapsible defaultExpanded>
-                                    <RecentGames fill recentGames={ recentGames }/>
-                                </Panel>
-                                <Panel header={<h3>Ranked Stats</h3>} collapsible defaultExpanded>
-                                    <RankedStats fill rankedStats={ rankedStats }/>
-                                </Panel>
+                            <CurrentGame currentGame={currentGame} region={region} rankedLeagues={ rankedLeagues } />
+                            <RecentGames fill recentGames={ recentGames }/>
+                            <RankedStats rankedStats={ rankedStats } summoner={ summoner } />
                         </Col>
                     </Row>
                 </Grid>

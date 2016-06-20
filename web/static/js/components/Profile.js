@@ -1,9 +1,12 @@
 import React from 'react'
+import { Panel } from 'react-bootstrap'
 
-const AggregateRankedStats = ({aggregateRankedStats}) => {
-    if (aggregateRankedStats) {
+const Profile = ({summoner, aggregateRankedStats}) => {
+    if (aggregateRankedStats && summoner.summonerLevel == 30) {
         return (
-            <div>
+            <Panel header={<h3>{summoner.name || "loading..."}</h3>} bsStyle="primary">
+                <div className="text-center ">
+                <img src={`http://ddragon.leagueoflegends.com/cdn/6.10.1/img/profileicon/${summoner.profileIconId || '666'}.png`}/>
                 <div>
                     Ranked: {aggregateRankedStats.totalSessionsWon || '0'}W-{aggregateRankedStats.totalSessionsLost || '0'}L</div>
                 <div>Ranked
@@ -12,10 +15,11 @@ const AggregateRankedStats = ({aggregateRankedStats}) => {
                     /{(aggregateRankedStats.totalAssists / aggregateRankedStats.totalSessionsPlayed).toFixed(2)},
                     {' '}{((aggregateRankedStats.totalChampionKills + aggregateRankedStats.totalAssists) / aggregateRankedStats.totalDeathsPerSession).toFixed(2)}:1
                 </div>
-            </div>)
+                </div>
+            </Panel>)
     } else {
-        return (<div>loading</div>)
+        return null
     }
 }
 
-export default AggregateRankedStats
+export default Profile

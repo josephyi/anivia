@@ -1,16 +1,19 @@
 import React from 'react'
-import { Table, Label } from 'react-bootstrap'
+import { Panel, Table, Label } from 'react-bootstrap'
 import champ_icons from '../css/StaticChampionSprites.css'
 import champions from '../data/champ_id_to_name.json'
+import championIcon from '../css/ChampionIcon.css'
 import TimeAgo from 'react-timeago'
 
 const RecentGames = props => {
-    return(
-        <Table bordered striped>
-            <tbody>
-            { renderRecentGames(props.recentGames) }
-            </tbody>
-        </Table>
+    return (
+        <Panel header={<h3>Recent Games</h3>} collapsible defaultExpanded bsStyle="info">
+            <Table fill bordered striped>
+                <tbody>
+                { renderRecentGames(props.recentGames) }
+                </tbody>
+            </Table>
+        </Panel>
     )
 }
 
@@ -20,7 +23,7 @@ const renderRecentGames = rows => (
 
 const renderRecentGame = row => (
     <tr key={row.gameId}>
-        <td><i className={champ_icons["champion-" + row.championId]}></i>   </td>
+        <td><i className={`${champ_icons["champion-" + row.championId]} ${championIcon.medium}`}></i></td>
         <td>{gameLabel(row['subType'])}</td>
         <td>{playerRoleLabel(row['stats']['playerRole'])} {playerPositionLabel(row['stats']['playerPosition'])}</td>
         <td>{row['stats']['championsKilled'] || '0'}/{row['stats']['numDeaths'] || '0'}/{row['stats']['assists'] || '0'}</td>
@@ -55,13 +58,13 @@ function gameLabel(subType) {
 function playerRoleLabel(playerRole) {
     switch(playerRole) {
         case 1:
-            return 'Duo'
+            return ''
         case 2:
             return 'Support'
         case 3:
             return 'Carry'
         case 4:
-            return 'Solo'
+            return ''
         default:
             return playerRole
     }
@@ -76,7 +79,7 @@ function playerPositionLabel(playerPosition) {
         case 3:
             return 'Jungle'
         case 4:
-            return 'Bot'
+            return ''
         default:
             return playerPosition
     }
