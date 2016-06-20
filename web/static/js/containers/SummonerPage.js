@@ -2,15 +2,17 @@ import React, {Component, PropTypes} from 'react'
 import {render} from 'react-dom'
 import {loadSummoner} from '../actions'
 import {connect} from 'react-redux'
-import {Grid, Row, Table} from 'react-bootstrap'
+import {Grid, Row, Col, Table, Panel} from 'react-bootstrap'
+import Profile from '../components/Profile'
 import RankedStats from '../components/RankedStats'
 import RecentGames from '../components/RecentGames'
+import CurrentGame from '../components/CurrentGame'
 
-function loadData(props) {
+function loadData(props, forced = false) {
     const {region, summonerName} = props
     const {summoner} = props
 
-    if(summoner.id === undefined) {
+    if (summoner.id === undefined || forced) {
         props.loadSummoner(region, summonerName)
     }
 }
@@ -24,30 +26,40 @@ class SummonerPage extends Component {
         loadData(this.props)
     }
 
+    componentWillReceiveProps(nextProps) {
+        const {aggregateRankedStats} = nextProps
+        if (aggregateRankedStats === undefined) {
+            loadData(nextProps, true)
+        }
+    }
+
     render() {
-        const {summoner, recentGames, rankedStats, aggregateRankedStats} = this.props
-        if(summoner.name) {
-        return (
-            <div>
-                <h1>{summoner.name || ""}</h1>
-                <img src={`http://ddragon.leagueoflegends.com/cdn/6.10.1/img/profileicon/${summoner.profileIconId || '666'}.png`} />
-                <h2>Ranked: {aggregateRankedStats.totalSessionsWon || '0'}W-{aggregateRankedStats.totalSessionsLost || '0'}L</h2>
-                <h2>Ranked KDA: {(aggregateRankedStats.totalChampionKills/aggregateRankedStats.totalSessionsPlayed).toFixed(2)}
-                    /{(aggregateRankedStats.totalDeathsPerSession/aggregateRankedStats.totalSessionsPlayed).toFixed(2)}
-                    /{(aggregateRankedStats.totalAssists/aggregateRankedStats.totalSessionsPlayed).toFixed(2)},
-                    {' '}{((aggregateRankedStats.totalChampionKills + aggregateRankedStats.totalAssists) / aggregateRankedStats.totalDeathsPerSession).toFixed(2)}:1
-                </h2>
-                <RecentGames recentGames={ recentGames } />
-                <RankedStats rankedStats={ rankedStats } />
-            </div>
-        )} else { return (<div>loading...</div>)}
+        const {summoner, currentGame, recentGames, rankedLeagues, rankedStats, aggregateRankedStats, region} = this.props
+        if (summoner && summoner.name) {
+            return (
+                <Grid >
+                    <Row>
+                        <Col xs={12} md={3}>
+                            <Profile aggregateRankedStats={ aggregateRankedStats } summoner={ summoner } rankedLeagues={ rankedLeagues } />
+                        </Col>
+                        <Col xs={12} md={9}>
+                            <CurrentGame currentGame={currentGame} region={region} rankedLeagues={ rankedLeagues } />
+                            <RecentGames fill recentGames={ recentGames }/>
+                            <RankedStats rankedStats={ rankedStats } summoner={ summoner } />
+                        </Col>
+                    </Row>
+                </Grid>
+            )
+        } else {
+            return (<div>loading...</div>)
+        }
     }
 }
 
 SummonerPage.propTypes = {
     loadSummoner: PropTypes.func.isRequired,
     summoner: PropTypes.object,
-    rankedStats: PropTypes.array.isRequired,
+    rankedStats: PropTypes.array,
     aggregateRankedStats: PropTypes.object
 }
 
@@ -55,18 +67,28 @@ function mapStateToProps(state, ownProps) {
     const region = ownProps.params.region
     const summonerName = ownProps.params.summonerName
 
-    if (state.entities[region] === undefined || state.entities[region][summonerName] === undefined)
-        return {region, summoner: {}, summonerName, rankedStats: [], aggregateRankedStats: {}}
+    const data = state.entities[region]
 
-    const {summoner, rankedLeague, rankedStats, recentGames, aggregateRankedStats} = state.entities[region][summonerName]
+    if (data === undefined || data["summoners"] === undefined || data["summoners"][summonerName] === undefined) {
+        return {region, summoner: {}, summonerName, rankedStats: [], aggregateRankedStats: {}}
+    }
+
+    const {summoners, currentGamesMap, currentGames, aggregateRankedStatsData,
+        rankedStatsData, rankedLeagues, recentGamesData} = data
+
+    const summoner = summoners ? summoners[summonerName] : {}
+    const currentGameId = summoner && currentGamesMap ? currentGamesMap[summoner.id] : null
+    const currentGame = currentGameId ? currentGames[currentGameId] : {}
+
     return {
+        currentGame,
         region,
         summonerName,
         summoner,
-        rankedLeague,
-        rankedStats,
-        recentGames,
-        aggregateRankedStats
+        rankedStats: summoner && rankedStatsData[summoner.id] ? rankedStatsData[summoner.id] : [],
+        recentGames: summoner && recentGamesData[summoner.id] ? recentGamesData[summoner.id] : [],
+        aggregateRankedStats: summoner ? aggregateRankedStatsData[summoner.id] : {},
+        rankedLeagues
     }
 }
 

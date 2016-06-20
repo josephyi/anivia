@@ -1,12 +1,12 @@
 import * as ActionTypes from '../actions'
 import { combineReducers } from 'redux'
-import {reducer as formReducer} from 'redux-form'
+import { reducer as form} from 'redux-form'
 import { routerReducer as routing } from 'react-router-redux'
 import merge from 'lodash/merge'
 
 const champions = require('../data/champ_id_to_name.json');
 
-function entities(state = {summoner: {name: ""}, rankedStats: [], aggregateRankedStats: {}, champions: champions}, action) {
+function entities(state = {champions: champions}, action) {
     if(action.response) {
         return merge({}, state, action.response)
     } else {
@@ -16,7 +16,7 @@ function entities(state = {summoner: {name: ""}, rankedStats: [], aggregateRanke
 
 const reducers = {
     entities,
-    form: formReducer,
+    form,
     errorMessage,
     routing
 };

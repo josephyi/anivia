@@ -22,7 +22,7 @@ defmodule Anivia.Router do
 
   scope "/api", Anivia do
     pipe_through :api
-    get "/:region/:summoner_id/detail", ApiController, :summoner_detail
+    get "/:region/:summoner_id/sync_recent_games_and_ranked_stats", ApiController, :sync_recent_games_and_ranked_stats
     get "/:region/:summoner_name", ApiController, :summoner
   end
 end

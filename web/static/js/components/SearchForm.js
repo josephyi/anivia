@@ -18,7 +18,7 @@ class SearchForm extends Component {
 
     render() {
         const { fields: { region, summonerName }, error, handleSubmit, submitting } = this.props
-        return (<form className="form-inline " onSubmit={handleSubmit}>
+        return (<form className="navbar-form navbar-right" onSubmit={handleSubmit}>
 
                 <div className="form-group">
                     <label className="sr-only">Summoner Name</label>

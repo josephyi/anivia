@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import Header from '../components/Header'
-import SearchForm from '../components/SearchForm'
+import { canonicalize } from '../components/CurrentGame'
 import { loadSummoner, resetErrorMessage  } from '../actions'
 import { browserHistory } from 'react-router'
 import { Alert } from 'react-bootstrap'
@@ -16,12 +16,7 @@ class App extends Component {
     handleSubmit(data, dispatch) {
         this.props.resetErrorMessage()
         this.props.loadSummoner(data.region, data.summonerName)
-        browserHistory.push(`/${data.region}/${data.summonerName.toLowerCase()}`)
-    }
-
-    // handle new search
-    componentDidUpdate(prevProps) {
-
+        browserHistory.push(`/${data.region}/${canonicalize(data.summonerName)}`)
     }
 
     handleAlertDismiss() {
@@ -44,16 +39,17 @@ class App extends Component {
     render() {
         return (
             <div>
-                <Header />
+                <Header handleSubmit={ this.handleSubmit }/>
                 <div className="container">
                     <div className="row clearfix">
                         <div className="col-md-8 col-md-offset-4">
-                            <SearchForm onSubmit={this.handleSubmit} />
+                           
                         </div>
                     </div>
+                </div>
                 {this.renderErrorMessage()}
                 {this.props.children}
-                </div>
+
             </div>
 
         )
@@ -69,8 +65,7 @@ function mapStateToProps(state, ownProps) {
     if (state.entities[region] === undefined)
       return { errorMessage: state.errorMessage, searchForm, summoner: {} }
 
-    const summoner = state.entities[region][summonerName]
-
+    const summoner = state.entities[region]["summoners"][summonerName]
     return {
         errorMessage: state.errorMessage,
         summoner: summoner ? summoner["summoner"] || {} : {},
