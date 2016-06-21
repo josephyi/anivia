@@ -23,6 +23,7 @@ function doRankedDataQuery(region, summonerId) {
 }
 
 function doFeaturedGames(region) {
+    console.log("ewtsds")
     return {
         [CALL_API] : {
             types: ["FEATURED_GAMES_REQUEST", "FEATURED_GAMES_SUCCESS", "FEATURED_GAMES_FAILURE"],
@@ -48,7 +49,7 @@ export function loadSummoner(region, summonerName) {
 export function loadFeaturedGames(region) {
     return (dispatch, getState) => {
         const stateRegion = getState().entities[region]
-        
+        console.log("are we here")
         return dispatch(doFeaturedGames(region))
     }
 }

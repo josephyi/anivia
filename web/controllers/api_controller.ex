@@ -92,14 +92,6 @@ defmodule Anivia.ApiController do
     }
   end
 
-  def add_game_data(map, region, summoner) do
-    recent_games_task = Task.async(fn -> Viktor.recent_games(region, summoner["id"]) end)
-
-    map
-    |> Map.put("recentGames", api_task_handler(recent_games_task, "games"))
-    |> Map.put("currentGame", @current_game_test)  #api_task_handler(current_game_task, nil))
-  end
-
   def api_task_handler(task, key \\ nil) do
     case Task.await(task) do
       %{^key => result} ->
