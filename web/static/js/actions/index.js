@@ -22,6 +22,15 @@ function doRankedDataQuery(region, summonerId) {
     }
 }
 
+function doFeaturedGames(region) {
+    return {
+        [CALL_API] : {
+            types: ["FEATURED_GAMES_REQUEST", "FEATURED_GAMES_SUCCESS", "FEATURED_GAMES_FAILURE"],
+            endpoint: `featured_games/${region}`
+        }
+    }
+}
+
 export function loadSummoner(region, summonerName) {
     return (dispatch, getState) => {
         const stateRegion = getState().entities[region]
@@ -36,7 +45,13 @@ export function loadSummoner(region, summonerName) {
     }
 }
 
-
+export function loadFeaturedGames(region) {
+    return (dispatch, getState) => {
+        const stateRegion = getState().entities[region]
+        
+        return dispatch(doFeaturedGames(region))
+    }
+}
 
 export const RESET_ERROR_MESSAGE = 'RESET_ERROR_MESSAGE'
 

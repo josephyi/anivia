@@ -19,13 +19,6 @@ class SearchForm extends Component {
     render() {
         const { fields: { region, summonerName }, error, handleSubmit, submitting } = this.props
         return (<form className="navbar-form navbar-right" onSubmit={handleSubmit}>
-
-                <div className="form-group">
-                    <label className="sr-only">Summoner Name</label>
-                    <input type="text" className="form-control" placeholder="Summoner Name" {...summonerName}/>
-                    {summonerName.touched && summonerName.error && <div>{summonerName.error}</div>}
-                </div>
-                {' '}
                 <div className="form-group">
                     <select className="form-control" {...region} >
                         <option value="br">BR</option>
@@ -42,6 +35,13 @@ class SearchForm extends Component {
                     </select>
                 </div>
                 {' '}
+                <div className="form-group">
+                    <label className="sr-only">Summoner Name</label>
+                    <input type="text" className="form-control" placeholder="Summoner Name" {...summonerName}/>
+                    {summonerName.touched && summonerName.error && <div>{summonerName.error}</div>}
+                </div>
+                {' '}
+
                 {error && <div>{error}</div>}
 
                     <button className="btn btn-primary" type="submit" disabled={submitting}>

@@ -2,7 +2,10 @@ defmodule Anivia.ApiController do
   use Anivia.Web, :controller
   @moduledoc false
 
-  @current_game_test File.read!("web/current_game_test.json") |> Poison.decode!
+  def featured_games(conn, %{"region" => region}) do
+    response = Viktor.featured_games(region)
+    json conn, %{ "featuredGames" => response } |> wrap_response(region)
+  end
 
   def summoner(conn, %{"region" => region, "summoner_name" => summoner_name}) do
       canonical_name = canonicalize(summoner_name)
