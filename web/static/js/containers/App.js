@@ -57,10 +57,10 @@ function mapStateToProps(state, ownProps) {
     if (state.entities[region] === undefined)
       return { errorMessage: state.errorMessage, searchForm, summoner: {} }
 
-    const summoner = state.entities[region]["summoners"][summonerName]
+    const summoner = state.entities[region]["summoners"] ? state.entities[region]["summoners"][summonerName] : {}
     return {
         errorMessage: state.errorMessage,
-        summoner: summoner ? summoner["summoner"] || {} : {},
+        summoner,
         searchForm
     }
 }

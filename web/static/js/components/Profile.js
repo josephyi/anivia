@@ -11,7 +11,7 @@ const Profile = ({summoner, aggregateRankedStats, rankedLeagues}) => {
 
 
                 <ListGroup fill>
-                    <ListGroupItem header="Ranked">{leagueInfo(rankedLeagues, summoner)}
+                    <ListGroupItem header="Ranked">{leagueInfo(rankedLeagues, summoner)}<br/>
                         {aggregateRankedStats.totalSessionsWon || '0'}W-{aggregateRankedStats.totalSessionsLost || '0'}L<br/>
                         KDA: {(aggregateRankedStats.totalChampionKills / aggregateRankedStats.totalSessionsPlayed).toFixed(2)}
                         /{(aggregateRankedStats.totalDeathsPerSession / aggregateRankedStats.totalSessionsPlayed).toFixed(2)}

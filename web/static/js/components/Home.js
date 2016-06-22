@@ -17,11 +17,16 @@ class Home extends Component {
         loadData(this.props)
     }
 
+    componentWillReceiveProps(nextProps) {
+        if(nextProps.featuredGames["gameList"] === undefined)
+            loadData(nextProps)
+    }
+
     render() {
         return(
             <Grid><Row>
                 <Col xs={12} md={12}>
-            <FeaturedGames featuredGames={this.props.featuredGames["gameList"]} />
+            <FeaturedGames featuredGames={this.props.featuredGames["gameList"]} region={this.props.region} />
             </Col></Row></Grid>
         )
     }

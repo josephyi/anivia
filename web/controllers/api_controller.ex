@@ -3,8 +3,38 @@ defmodule Anivia.ApiController do
   @moduledoc false
 
   def featured_games(conn, %{"region" => region}) do
-    response = Viktor.featured_games(region)
-    json conn, %{ "featuredGames" => response } |> wrap_response(region)
+    featured_games_response = Viktor.featured_games(region)
+
+    current_games = featured_games_response["gameList"]
+    |> Enum.reduce(%{}, &(Map.put(&2, Integer.to_string(&1["gameId"]), &1)))
+
+    all = fn :get, data, next -> Enum.map(data, next) end
+
+    participants = get_in(Map.values(current_games), [all, "participants"])
+    |> List.flatten
+
+    [summoners] = Enum.map(participants, &(canonicalize(&1["summonerName"])))
+    |> Enum.chunk(40)
+    |> Enum.map(&(Task.async(fn -> Viktor.Operation.Summoner.by_name(region, Enum.join(&1, ",")) end)))
+    |> Enum.map(&(Task.await(&1)))
+
+    # per api limits, chunks of 10
+#    rankedLeagues =
+#    summoners |> Map.values |> Enum.map(&(&1["id"])) |> Enum.chunk(10)
+#    |> Enum.map(&(Task.async(
+#      fn -> Viktor.Operation.League.by_summoner_entry(region, Enum.join(&1, ",")) end
+#      )))
+#    |> Enum.flat_map(&(Task.await(&1)))
+
+    response = %{
+       "summoners" => summoners,
+       "featuredGames" => featured_games_response
+       #,
+#       "rankedLeagues" => rankedLeagues
+}
+      |> wrap_response(region)
+
+    json conn, response
   end
 
   def summoner(conn, %{"region" => region, "summoner_name" => summoner_name}) do
@@ -80,16 +110,26 @@ defmodule Anivia.ApiController do
   end
 
   def ranked_response(region, summoner_id) do
-    { summoner_ranked_stats, champion_ranked_stats } = Viktor.ranked_stats(region, summoner_id)["champions"]
-            |> Map.new(&{Integer.to_string(&1["id"]), &1["stats"]})
-            |> Map.pop("0")
+    ranked_stats_response = Viktor.ranked_stats(region, summoner_id)
 
-    champion_stats = Enum.map(champion_ranked_stats, fn {k, v} -> Map.put(v, "id", k) end) |> Enum.sort(&(&1["totalSessionsPlayed"] > &2["totalSessionsPlayed"]))
+    case ranked_stats_response do
+          %{"status" => %{"status_code" => 404}} ->
+            %{
+              "aggregateRankedStatsData" => %{ summoner_id => %{} },
+              "rankedStatsData" => %{ summoner_id => [] }
+            }
+          _ ->
+            { summoner_ranked_stats, champion_ranked_stats } = ranked_stats_response["champions"]
+                    |> Map.new(&{Integer.to_string(&1["id"]), &1["stats"]})
+                    |> Map.pop("0")
 
-    %{
-      "aggregateRankedStatsData" => %{ summoner_id => summoner_ranked_stats },
-      "rankedStatsData" => %{ summoner_id => champion_stats }
-    }
+            champion_stats = Enum.map(champion_ranked_stats, fn {k, v} -> Map.put(v, "id", k) end) |> Enum.sort(&(&1["totalSessionsPlayed"] > &2["totalSessionsPlayed"]))
+            %{
+            "aggregateRankedStatsData" => %{ summoner_id => summoner_ranked_stats },
+            "rankedStatsData" => %{ summoner_id => champion_stats }
+            }
+
+    end
   end
 
   def api_task_handler(task, key \\ nil) do

@@ -35,7 +35,7 @@ function doFeaturedGames(region) {
 export function loadSummoner(region, summonerName) {
     return (dispatch, getState) => {
         const stateRegion = getState().entities[region]
-        if(stateRegion && stateRegion["summoners"][summonerName]) {
+        if(stateRegion && stateRegion["summoners"] && stateRegion["summoners"][summonerName]) {
             const summoner_id = stateRegion["summoners"][summonerName]["id"]
             if(stateRegion["rankedStatsData"][summoner_id] === undefined) {
                 return dispatch(doRankedDataQuery(region, summoner_id))

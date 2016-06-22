@@ -1,40 +1,45 @@
 import React from 'react'
+import { Link } from 'react-router'
 import { Carousel, Panel, Table, Row, Col } from 'react-bootstrap'
+import { canonicalize, gameType } from '../util/DataFormatter'
+import champ_icons from '../css/StaticChampionSprites.css'
+import championIcon from '../css/ChampionIcon.css'
 
-const FeaturedGames = ({featuredGames}) => {
+const FeaturedGames = ({featuredGames, region}) => {
     if(featuredGames) {
         return (
             <Carousel>
-                {renderFeaturedGames(featuredGames)}
+                {renderFeaturedGames(region, featuredGames)}
             </Carousel>
         )
     } else return null
 }
 
-const renderFeaturedGames = games => (
-    games.map(game => renderGame(game))
+const renderFeaturedGames = (region, games) => (
+    games.map(game => renderGame(region, game))
 )
 
-const renderGame = game => (
+const renderGame = (region, game) => (
     <Carousel.Item>
         <Row><Col mdOffset={2} md={8}>
-        <Panel header={<h3>Current Game</h3>} bsStyle="info">
+        <Panel header={gameType(game.gameQueueConfigId)} bsStyle="info">
             <Table fill>
                 <tbody>
-        {renderParticipants(game.participants)}
+        {renderParticipants(region, game.participants)}
                 </tbody></Table>
         </Panel>
         </Col></Row>
     </Carousel.Item>
 )
 
-const renderParticipants = participants => (
-    participants.map(participant => renderParticipant(participant))
+const renderParticipants = (region, participants) => (
+    participants.map(participant => renderParticipant(region, participant))
 )
 
-const renderParticipant = participant => (
+const renderParticipant = (region, participant) => (
     <tr>
-        <td>{participant.summonerName}</td>
+        <td><i className={`${champ_icons["champion-" + participant.championId]} ${championIcon.medium}`}></i></td>
+        <td><Link to={`${region}/${canonicalize(participant.summonerName)}`}>{participant.summonerName}</Link></td>
     </tr>
 )
 
