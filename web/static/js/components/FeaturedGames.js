@@ -39,7 +39,7 @@ const renderParticipants = (region, participants) => (
 const renderParticipant = (region, participant) => (
     <tr>
         <td><i className={`${champ_icons["champion-" + participant.championId]} ${championIcon.medium}`}></i></td>
-        <td><Link to={`${region}/${canonicalize(participant.summonerName)}`}>{participant.summonerName}</Link></td>
+        <td><a href={`${region}/${canonicalize(participant.summonerName)}`}>{participant.summonerName}</a></td>
     </tr>
 )
 

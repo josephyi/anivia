@@ -9,12 +9,11 @@ import RecentGames from '../components/RecentGames'
 import CurrentGame from '../components/CurrentGame'
 
 function loadData(props, forced = false) {
-    const {region, summonerName} = props
-    const {summoner} = props
+    const {region, summonerName, summoner} = props
 
     if (summoner.id === undefined || forced) {
-        props.loadSummoner(region, summonerName)
-    }
+       props.loadSummoner(region, summonerName)
+    } 
 }
 
 class SummonerPage extends Component {
@@ -23,12 +22,12 @@ class SummonerPage extends Component {
     }
 
     componentWillMount() {
-        loadData(this.props)
+        loadData(this.props, true)
     }
 
     componentWillReceiveProps(nextProps) {
-        const {aggregateRankedStats} = nextProps
-        if (aggregateRankedStats === undefined) {
+        const {currentGame, aggregateRankedStats} = nextProps
+        if (currentGame === null || aggregateRankedStats === undefined) {
             loadData(nextProps, true)
         }
     }
@@ -93,9 +92,9 @@ function mapStateToProps(state, ownProps) {
         region,
         summonerName,
         summoner,
-        rankedStats: summoner && rankedStatsData[summoner.id] ? rankedStatsData[summoner.id] : [],
-        recentGames: summoner && recentGamesData[summoner.id] ? recentGamesData[summoner.id] : [],
-        aggregateRankedStats: summoner ? aggregateRankedStatsData[summoner.id] : {},
+        rankedStats: summoner && rankedStatsData ? rankedStatsData[summoner.id] || [] : [],
+        recentGames: summoner && recentGamesData ? recentGamesData[summoner.id] || [] : [],
+        aggregateRankedStats: summoner && aggregateRankedStatsData ? aggregateRankedStatsData[summoner.id] : {},
         rankedLeagues
     }
 }

@@ -1,10 +1,11 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { loadFeaturedGames } from '../actions'
+import { loadFeaturedGames, resetErrorMessage } from '../actions'
 import FeaturedGames from '../components/FeaturedGames'
 import { Grid, Row, Col } from 'react-bootstrap'
 
 function loadData(props) {
+    props.resetErrorMessage()
     props.loadFeaturedGames(props.region)
 }
 
@@ -18,7 +19,7 @@ class Home extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if(nextProps.featuredGames["gameList"] === undefined)
+        if(nextProps.region !== this.props.region)
             loadData(nextProps)
     }
 
@@ -48,4 +49,4 @@ function mapStateToProps(state) {
     }
 }
 
-export default connect(mapStateToProps, { loadFeaturedGames })(Home)
+export default connect(mapStateToProps, { loadFeaturedGames, resetErrorMessage })(Home)
