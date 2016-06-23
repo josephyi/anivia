@@ -9,6 +9,7 @@ defmodule Anivia do
     children = [
       # Start the endpoint when the application starts
       supervisor(Anivia.Endpoint, []),
+      worker(ConCache, [[ttl_check: :timer.seconds(15), ttl: :timer.seconds(300)], [name: :response_cache]])
       # Start the Ecto repository
       # supervisor(Anivia.Repo, []),
       # Here you could define other workers and supervisors as children

@@ -1,55 +1,47 @@
 defmodule Anivia.ApiController do
   use Anivia.Web, :controller
+  import Anivia.ApiUtil
+
   @moduledoc false
 
   def featured_games(conn, %{"region" => region}) do
-    featured_games_response = Viktor.featured_games(region)
+    cache_key = "#{region}-featured_games"
+    cached_response = ConCache.get(:response_cache, cache_key)
 
-    case featured_games_response do
-      %{"status" => %{"status_code" => _}} ->
-        conn
-        |> put_status(featured_games_response["status"] |> Map.fetch!("status_code"))
-        |> render(Anivia.ErrorView, "errors.json", response: featured_games_response)
-      %{"gameList" => []} ->
-        json conn, []
-      _ ->
-        current_games = featured_games_response["gameList"]
+    if cached_response do
+      json conn, cached_response
+    else
+      featured_games_response = Viktor.featured_games(region)
+
+      case featured_games_response do
+        %{"status" => %{"status_code" => _}} ->
+          conn
+          |> put_status(featured_games_response["status"] |> Map.fetch!("status_code"))
+          |> render(Anivia.ErrorView, "errors.json", response: featured_games_response)
+        %{"gameList" => []} ->
+          json conn, []
+        _ ->
+          current_games = featured_games_response["gameList"]
           |> Enum.reduce(%{}, &(Map.put(&2, Integer.to_string(&1["gameId"]), &1)))
 
-          all = fn :get, data, next -> Enum.map(data, next) end
-
-          participants = get_in(Map.values(current_games), [all, "participants"])
-          |> List.flatten
-
-          [summoners] = Enum.map(participants, &(canonicalize(&1["summonerName"])))
-          |> Enum.chunk(40)
-          |> Enum.map(&(Task.async(fn -> Viktor.Operation.Summoner.by_name(region, Enum.join(&1, ",")) end)))
-          |> Enum.map(&(Task.await(&1)))
-
-          # per api limits, chunks of 10
-          rankedLeagues = summoners
-          |> Map.values
-          |> Enum.map(&(&1["id"]))
-          |> Enum.chunk(10)
-          |> Enum.map(&(Task.async(
-            fn -> Viktor.Operation.League.by_summoner_entry(region, Enum.join(&1, ",")) end
-            )))
-          |> Enum.map(&(Task.await(&1)))
-          |> Enum.reduce(%{}, &(Map.merge(&2, &1)))
+          summoners = Anivia.ApiUtil.summoners_in_games(region, current_games)
+          rankedLeagues = Anivia.ApiUtil.ranked_leagues(region, summoners)
 
           response = %{
-             "summoners" => summoners,
-             "featuredGames" => featured_games_response,
-             "rankedLeagues" => rankedLeagues,
-             "currentGame" => %{},
-             "currentGamesMap" => %{},
-             "aggregateRankedStatsData" => %{},
-             "rankedStatsData" => %{},
-             "recentGamesData" => %{}
+            "summoners" => summoners,
+            "featuredGames" => featured_games_response,
+            "rankedLeagues" => rankedLeagues,
+            "currentGame" => %{},
+            "currentGamesMap" => %{},
+            "aggregateRankedStatsData" => %{},
+            "rankedStatsData" => %{},
+            "recentGamesData" => %{}
           }
           |> wrap_response(region)
 
+          ConCache.put(:response_cache, cache_key, %ConCache.Item{value: response, ttl: :timer.seconds(300)})
           json conn, response
+      end
     end
   end
 
@@ -99,14 +91,6 @@ defmodule Anivia.ApiController do
           "rankedLeagues" => Task.await(league_entry_task)
         } |> Map.merge(Task.await(ranked_data_task)) |> Map.merge(Task.await(recent_games_task))
     end
-  end
-
-  def wrap_response(response, region) do
-    %{region => response}
-  end
-
-  def canonicalize(name) do
-    name |> String.downcase |> String.replace(" ", "")
   end
 
   def ranked_data(region, summoner) do
