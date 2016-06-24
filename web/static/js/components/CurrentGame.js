@@ -6,8 +6,7 @@ import champ_icons from '../css/StaticChampionSprites.css'
 import championIcon from '../css/ChampionIcon.css'
 
 const CurrentGame = ({currentGame, region, rankedLeagues}) => {
-    if(currentGame) {
-
+    if(currentGame && currentGame.gameQueueConfigId) {
     return (
         <Panel header={gameType(currentGame.gameQueueConfigId)} collapsible defaultExpanded bsStyle="info">
             <Table fill>

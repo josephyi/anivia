@@ -17,7 +17,7 @@ function doRankedDataQuery(region, summonerId) {
     return {
         [CALL_API] : {
             types: ["RANKED_DATA_REQUEST", "RANKED_DATA_SUCCESS", "RANKED_DATA_FAILURE"],
-            endpoint: `${region}/${summonerId}/sync_recent_games_and_ranked_stats`
+            endpoint: `${region}/${summonerId}/games_and_ranked_stats`
         }
     }
 }

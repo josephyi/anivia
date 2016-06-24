@@ -9,11 +9,13 @@ import RecentGames from '../components/RecentGames'
 import CurrentGame from '../components/CurrentGame'
 
 function loadData(props, forced = false) {
-    const {region, summonerName, summoner} = props
-
+    const {region, summonerName, summoner, currentGame} = props
+    
     if (summoner.id === undefined || forced) {
        props.loadSummoner(region, summonerName)
-    } 
+    } else {
+        console.log("handle it here")
+    }
 }
 
 class SummonerPage extends Component {

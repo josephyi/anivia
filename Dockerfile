@@ -1,4 +1,4 @@
-FROM josephyi/phoenixframework
+FROM josephyi/phoenixframework:1.0.2
 
 WORKDIR /app
 ENV MIX_ENV prod

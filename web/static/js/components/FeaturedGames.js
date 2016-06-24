@@ -20,7 +20,7 @@ const renderFeaturedGames = (region, games) => (
 )
 
 const renderGame = (region, game) => (
-    <Carousel.Item>
+    <Carousel.Item key={game.gameId}>
         <Row><Col mdOffset={2} md={8}>
         <Panel header={gameType(game.gameQueueConfigId)} bsStyle="info">
             <Table fill>
@@ -37,9 +37,9 @@ const renderParticipants = (region, participants) => (
 )
 
 const renderParticipant = (region, participant) => (
-    <tr>
+    <tr key={participant.summonerName}>
         <td><i className={`${champ_icons["champion-" + participant.championId]} ${championIcon.medium}`}></i></td>
-        <td><a href={`${region}/${canonicalize(participant.summonerName)}`}>{participant.summonerName}</a></td>
+        <td><Link to={`${region}/${canonicalize(participant.summonerName)}`}>{participant.summonerName}</Link></td>
     </tr>
 )
 
