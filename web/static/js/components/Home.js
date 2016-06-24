@@ -27,7 +27,7 @@ class Home extends Component {
         return(
             <Grid><Row>
                 <Col xs={12} md={12}>
-            <FeaturedGames featuredGames={this.props.featuredGames["gameList"]} region={this.props.region} />
+            <FeaturedGames featuredGames={this.props.featuredGames["gameList"]} region={this.props.region} rankedLeagues={this.props.rankedLeagues} />
             </Col></Row></Grid>
         )
     }
@@ -45,7 +45,8 @@ function mapStateToProps(state) {
 
     return {
         region,
-        featuredGames: data["featuredGames"]
+        featuredGames: data["featuredGames"],
+        rankedLeagues: data["rankedLeagues"]
     }
 }
 
