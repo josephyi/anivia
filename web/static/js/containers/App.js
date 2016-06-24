@@ -40,16 +40,8 @@ class App extends Component {
         return (
             <div>
                 <Header handleSubmit={ this.handleSubmit }/>
-                <div className="container">
-                    <div className="row clearfix">
-                        <div className="col-md-8 col-md-offset-4">
-                           
-                        </div>
-                    </div>
-                </div>
                 {this.renderErrorMessage()}
                 {this.props.children}
-
             </div>
 
         )
@@ -65,10 +57,10 @@ function mapStateToProps(state, ownProps) {
     if (state.entities[region] === undefined)
       return { errorMessage: state.errorMessage, searchForm, summoner: {} }
 
-    const summoner = state.entities[region]["summoners"][summonerName]
+    const summoner = state.entities[region]["summoners"] ? state.entities[region]["summoners"][summonerName] : {}
     return {
         errorMessage: state.errorMessage,
-        summoner: summoner ? summoner["summoner"] || {} : {},
+        summoner,
         searchForm
     }
 }

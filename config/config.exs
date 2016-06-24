@@ -8,7 +8,6 @@ use Mix.Config
 # Configures the endpoint
 config :anivia, Anivia.Endpoint,
   url: [host: "localhost"],
-  root: Path.dirname(__DIR__),
   secret_key_base: "xj3MIKEQM9/O5JGivbEx7J2r7NzJvWej01DJP/gIBdOgr9x9PfpOfa60Swq3W8qk",
   render_errors: [accepts: ~w(html json)],
   pubsub: [name: Anivia.PubSub,

@@ -1,15 +1,11 @@
-FROM josephyi/alpine-phoenix:1.2
+FROM josephyi/phoenixframework:1.0.2
 
-RUN mkdir /app
 WORKDIR /app
-ENV MIX_ENV=prod
-ENV NODE_ENV=production
+ENV MIX_ENV prod
+ENV NODE_ENV production
 ENV PORT=4000
 
 COPY . /app
-RUN mix deps.get
-RUN mix compile 
-RUN npm install
-RUN mix phoenix.digest
+RUN yes | mix local.hex && yes | mix local.rebar && npm install && mix do deps.get && MIX_ENV=prod mix compile && mix phoenix.digest
 VOLUME ["/app"]
 CMD ["mix", "phoenix.server"]

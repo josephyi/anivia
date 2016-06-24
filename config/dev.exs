@@ -11,7 +11,7 @@ config :anivia, Anivia.Endpoint,
   debug_errors: false,
   code_reloader: true,
   check_origin: false,
-  watchers: [{Path.expand("webpack.dev.js"), []}]
+  watchers: [{Path.expand("webpack.dev.js"), [cd: Path.expand("../", __DIR__)]}]
 
 # Watch static and templates for browser reloading.
 config :anivia, Anivia.Endpoint,
