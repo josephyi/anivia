@@ -17,7 +17,7 @@ defmodule Mix.Tasks.Anivia.StaticContent do
     {:ok, file} = File.open("web/static/js/containers/StaticChampionSprites.css", [:write, :utf8])
     Enum.each(sprite_to_champ_ids, fn({sprite_key, v}) ->
       classes = Enum.map(v, &(".champion-#{&1}")) |> Enum.join(", ")
-      IO.write(file, classes <> " { background: url(http://ddragon.leagueoflegends.com/cdn/#{version}/img/sprite/#{sprite_key}) 0px 0; height: 48px; width: 48px; display:block; } \n")
+      IO.write(file, classes <> " { background: url(https://ddragon.leagueoflegends.com/cdn/#{version}/img/sprite/#{sprite_key}) 0px 0; height: 48px; width: 48px; display:block; } \n")
 
       Enum.each(v, fn id ->
         x_pos = get_in(champs, [id, "image", "x"])
