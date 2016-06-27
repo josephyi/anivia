@@ -8,7 +8,7 @@ const Profile = ({summoner, aggregateRankedStats, rankedLeagues}) => {
             <Panel header={<h3>{summoner.name || "loading..."}</h3>} bsStyle="primary">
                 <div>
                 <div className="text-center ">
-                <img src={`http://ddragon.leagueoflegends.com/cdn/6.12.1/img/profileicon/${summoner.profileIconId || '666'}.png`}/>
+                <img src={`https://ddragon.leagueoflegends.com/cdn/6.12.1/img/profileicon/${summoner.profileIconId || '666'}.png`}/>
                 </div>
                 <ProfileRankedStats summoner={summoner} rankedLeagues={rankedLeagues} aggregateRankedStats={aggregateRankedStats} />
                 </div>
@@ -17,7 +17,7 @@ const Profile = ({summoner, aggregateRankedStats, rankedLeagues}) => {
         return(
             <Panel header={<h3>{summoner.name || "loading..."}</h3>} bsStyle="primary">
                 <div className="text-center ">
-                    <img src={`http://ddragon.leagueoflegends.com/cdn/6.12.1/img/profileicon/${summoner.profileIconId || '666'}.png`}/>
+                    <img src={`https://ddragon.leagueoflegends.com/cdn/6.12.1/img/profileicon/${summoner.profileIconId || '666'}.png`}/>
                 </div>
                 <ListGroup fill>
                     <ListGroupItem>Level {summoner.summonerLevel}</ListGroupItem>
