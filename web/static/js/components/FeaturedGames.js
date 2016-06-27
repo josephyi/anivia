@@ -4,26 +4,27 @@ import { Grid, Carousel, Panel, Table, Row, Col } from 'react-bootstrap'
 import { canonicalize, gameType } from '../util/DataFormatter'
 import champ_icons from '../css/StaticChampionSprites.css'
 import championIcon from '../css/ChampionIcon.css'
-import LiveGameContainer from '../containers/LiveGame'
+import LiveGameContainer from '../containers/LiveGameContainer'
 
-const FeaturedGames = ({featuredGames, region, rankedLeagues}) => {
+const FeaturedGames = ({featuredGames, region, rankedLeagues, summoners}) => {
+    console.log(summoners)
     if(featuredGames) {
         return (
             <Row>
-                {renderFeaturedGames(region, featuredGames, rankedLeagues)}
+                {renderFeaturedGames(region, featuredGames, rankedLeagues, summoners)}
            </Row>
         )
     } else return null
 }
 
-const renderFeaturedGames = (region, games, rankedLeagues) => (
-    games.map(game => renderGame(region, game, rankedLeagues))
+const renderFeaturedGames = (region, games, rankedLeagues, summoners) => (
+    games.map(game => renderGame(region, game, rankedLeagues, summoners))
 )
 
-const renderGame = (region, game, rankedLeagues) => (
+const renderGame = (region, game, rankedLeagues, summoners) => (
     //<Carousel.Item key={game.gameId}>
         <Col md={12}>
-          <LiveGameContainer region={region} game={game} rankedLeagues={rankedLeagues} />
+          <LiveGameContainer region={region} game={game} rankedLeagues={rankedLeagues} summoners={summoners} />
         </Col>
     //</Carousel.Item>
 )

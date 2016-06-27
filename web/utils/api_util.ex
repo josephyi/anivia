@@ -13,7 +13,7 @@ defmodule Anivia.ApiUtil do
     get_in(Map.values(games), [Access.all, "participants"])
     |> List.flatten
     |> Enum.map(&(canonicalize(&1["summonerName"])))
-    |> Enum.chunk(40)
+    |> Enum.chunk(40, 40, [])
     |> Enum.map(&(Task.async(fn -> Viktor.Operation.Summoner.by_name(region, Enum.join(&1, ",")) end)))
     |> Enum.map(&(Task.await(&1)))
     |> Enum.at(0)
