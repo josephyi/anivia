@@ -9,7 +9,7 @@ const LiveGame = ({region, game, rankedLeagues, summoners}) => {
       case 410:
         return (<RankedGame region={region} game={game} rankedLeagues={rankedLeagues} summoners={summoners} />)
       default:
-        return (<DefaultGame />)
+        return (<DefaultGame region={region} game={game} rankedLeagues={rankedLeagues} summoners={summoners} />)
     }
 }
 

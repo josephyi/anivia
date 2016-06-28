@@ -8,7 +8,7 @@ defmodule Anivia.ApiController do
     cache_key = "#{region}-featured_games"
     cached_response = ConCache.get(:response_cache, cache_key)
 
-    if cached_response do
+    if false do
       json conn, cached_response
     else
       featured_games_response = Viktor.featured_games(region)

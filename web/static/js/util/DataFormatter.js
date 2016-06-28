@@ -1,5 +1,5 @@
 import React from 'react'
-
+import { Label } from 'react-bootstrap'
 export function canonicalize(name) {
     return name.replace(/\s/g, "").toLowerCase()
 }
@@ -45,4 +45,29 @@ export const tierAndDivision = league => {
     } else {
         return (<span>{league['tier']} {league['entries'][0]['division']}</span>)
     }
+}
+
+export const leagueWinLoss = (rankedLeagues, summonerId) => {
+    const league = rankedLeagues[summonerId]
+
+    if(league) {
+        const wins = league[0]['entries'][0]['wins']
+        const losses = league[0]['entries'][0]['losses']
+       return (
+           <span>{wins}W-{losses}L<p>{winPercentageBadge(wins, wins + losses)}</p></span>
+       )
+    } else return null
+}
+
+export function winPercentageBadge (wins, games) {
+    const percentage = Math.round(wins / games * 100)
+    let labelStyle = 'default'
+    if(percentage >= 70)
+        labelStyle = 'warning'
+    else if(percentage >= 60)
+        labelStyle = 'info'
+    else if(percentage >= 50)
+        labelStyle = 'primary'
+
+    return(<Label bsStyle={labelStyle}>{percentage}%</Label>)
 }
