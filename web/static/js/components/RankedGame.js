@@ -8,7 +8,10 @@ import { Link } from 'react-router'
 const RankedGame = ({region, game, rankedLeagues, summoners}) => (
       <Row>
           <Col md={1}>
-              d
+              <h4 className="text-center">Bans</h4>
+              <ListGroup>
+                  {renderBans(game.bannedChampions.filter(b => b.teamId == 100))}
+              </ListGroup>
           </Col>
           <Col md={5}>
               <ListGroup>
@@ -19,12 +22,25 @@ const RankedGame = ({region, game, rankedLeagues, summoners}) => (
               <ListGroup>{renderParticipants(region, game.participants.filter(p => p.teamId == 200), rankedLeagues, summoners)}
               </ListGroup>
           </Col>
-          <Col md={1}>
-              d
+          <Col md={1} >
+              <h4 className="text-center">Bans</h4>
+              <ListGroup>
+                  {renderBans(game.bannedChampions.filter(b => b.teamId == 200))}
+              </ListGroup>
           </Col>
 
       </Row>
     
+)
+
+const renderBans = (bans) => (
+  bans.map(ban => renderBan(ban.championId))
+)
+
+const renderBan = (championId) => (
+    <ListGroupItem key={championId}>
+        <i className={`${champ_icons["champion-" + championId]} ${championIcon.medium}`}></i>
+    </ListGroupItem>
 )
 
 const renderParticipants = (region, participants, rankedLeagues, summoners) => (
