@@ -5,6 +5,7 @@ import championIcon from '../css/ChampionIcon.css'
 import champions from '../data/champ_id_to_name.json'
 import { Panel, Label } from 'react-bootstrap'
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table'
+import { winPercentageBadge } from '../util/DataFormatter'
 
 const RankedStats = ({ rankedStats, summoner }) => {
     if(rankedStats && summoner.summonerLevel == 30) {
@@ -53,17 +54,6 @@ const championIconFormatter = (cell, row) => (
 
 )
 
-function winPercentageBadge (wins, games) {
-    const percentage = Math.round(wins / games * 100)
-        let labelStyle = 'default'
-        if(percentage >= 70)
-          labelStyle = 'warning'
-        else if(percentage >= 60)
-            labelStyle = 'info'
-        else if(percentage >= 50)
-        labelStyle = 'primary'
 
-        return(<Label bsStyle={labelStyle}>{percentage}%</Label>)
-}
 
 export default RankedStats

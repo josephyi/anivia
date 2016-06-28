@@ -1,5 +1,5 @@
 FROM josephyi/phoenixframework:1.0.2
-
+RUN apk --update add erlang-tools && rm -rf /var/cache/apk/*
 WORKDIR /app
 ENV MIX_ENV prod
 ENV NODE_ENV production
