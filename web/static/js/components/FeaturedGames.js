@@ -7,7 +7,6 @@ import championIcon from '../css/ChampionIcon.css'
 import LiveGameContainer from '../containers/LiveGameContainer'
 
 const FeaturedGames = ({featuredGames, region, rankedLeagues, summoners}) => {
-    console.log(summoners)
     if(featuredGames) {
         return (
             <Row>
@@ -23,7 +22,7 @@ const renderFeaturedGames = (region, games, rankedLeagues, summoners) => (
 
 const renderGame = (region, game, rankedLeagues, summoners) => (
     //<Carousel.Item key={game.gameId}>
-        <Col md={12}>
+        <Col md={12} key={game.gameId}>
           <LiveGameContainer region={region} game={game} rankedLeagues={rankedLeagues} summoners={summoners} />
         </Col>
     //</Carousel.Item>

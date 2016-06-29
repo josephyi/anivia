@@ -5,8 +5,8 @@ import championIcon from '../css/ChampionIcon.css'
 import {canonicalize, leagueInfo, leagueWinLoss} from '../util/DataFormatter'
 import {Link} from 'react-router'
 
-const blueTeam = {borderWidth: '2px 0 2px 0', borderStyle: 'solid', borderColor: '#5bc0de'}
-const redTeam = {borderWidth: '2px 0 2px 0', borderStyle: 'solid', borderColor: '#d9534f'}
+const blueTeam = {borderLeft: '3px solid #5bc0de'}
+const redTeam = {borderRight: '3px solid #d9534f'}
 
 const RankedGame = ({region, game, rankedLeagues, summoners}) => (
     <Row>
@@ -64,13 +64,13 @@ const renderParticipant = (region, participant, rankedLeagues, summoners) => (
                 className={`${champ_icons["champion-" + participant.championId]}  ${participant.teamId == 100 ? '' : 'pull-right'}`}></i></Col>
             <Col md={6} mdPush={participant.teamId == 100 ? 0 : 2}>
                 <div className={participant.teamId == 100 ? 'text-right' : 'text-left'}><Link
-                    to={`${region}/${canonicalize(participant.summonerName)}`}>{participant.summonerName}</Link>
-                    <p>{ summoners[canonicalize(participant.summonerName)] ? leagueInfo(rankedLeagues, summoners[canonicalize(participant.summonerName)]["id"]) : ''}</p>
+                    to={`/${region}/${canonicalize(participant.summonerName)}`}>{participant.summonerName}</Link>
+                    <p>{ summoners[canonicalize(participant.summonerName)] ? leagueInfo(rankedLeagues, summoners[canonicalize(participant.summonerName)]) : ''}</p>
                 </div>
             </Col>
             <Col md={4} mdPull={participant.teamId == 100 ? 0 : 8}>
                 <div className={participant.teamId == 100 ? 'text-right' : 'text-left'}>
-                    { summoners[canonicalize(participant.summonerName)] ? leagueWinLoss(rankedLeagues, summoners[canonicalize(participant.summonerName)]["id"]) : ''}
+                    { summoners[canonicalize(participant.summonerName)] ? leagueWinLoss(rankedLeagues, summoners[canonicalize(participant.summonerName)]['id']) : ''}
                 </div>
             </Col>
         </Row>

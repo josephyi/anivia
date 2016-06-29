@@ -2,6 +2,7 @@ import React from 'react'
 import { gameType } from '../util/DataFormatter'
 import { Panel } from 'react-bootstrap'
 import LiveGame from '../containers/LiveGame'
+import GameNotFound from '../components/GameNotFound'
 
 const LiveGameContainer = ({region, game, rankedLeagues, summoners}) => {
     if(game && game.gameQueueConfigId && summoners) {
@@ -11,7 +12,7 @@ const LiveGameContainer = ({region, game, rankedLeagues, summoners}) => {
             </Panel>
         )
     } else {
-        return(<GameNotFound />)
+        return(<GameNotFound></GameNotFound>)
     }
 }
 

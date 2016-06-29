@@ -1,9 +1,9 @@
 import React from 'react'
-import Panel from 'react-bootstrap'
+import { Panel } from 'react-bootstrap'
 
 const GameNotFound = () => (
     <Panel>
-        Game Not Found
+        Not Playing
     </Panel>
 )
 

@@ -13,7 +13,7 @@ const renderRankedLeagues = (rows) => (
 
 // TODO iterate through rankedleagues rather than using first index
 const renderRankedLeague = (row) => (
-    <ListGroupItem>
+    <ListGroupItem key={`league_entry_${row['entries']}`}>
         {row['queue']}{' '}<br/>
         {renderEntries(row['entries'], row['tier'])}
     </ListGroupItem>

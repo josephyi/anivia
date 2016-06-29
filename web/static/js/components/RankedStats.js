@@ -7,11 +7,13 @@ import { Panel, Label } from 'react-bootstrap'
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table'
 import { winPercentageBadge } from '../util/DataFormatter'
 
+const tableStyle = {border: '0px'}
+
 const RankedStats = ({ rankedStats, summoner }) => {
     if(rankedStats && summoner.summonerLevel == 30) {
         return (
             <Panel header={<h3>Ranked Stats</h3>} collapsible defaultExpanded bsStyle="info">
-                <BootstrapTable fill data={rankedStats} striped={true} condensed={true} bordered={false}>
+                <BootstrapTable fill data={rankedStats} striped={true} condensed={true} bordered={false} tableStyle={tableStyle}>
                     <TableHeaderColumn dataFormat={championIconFormatter} dataField="id" isKey={true} dataSort={true}
                                        sortFunc={championNameSorter}>Champion</TableHeaderColumn>
                     <TableHeaderColumn dataField="totalSessionsPlayed" dataSort={true}>Games</TableHeaderColumn>

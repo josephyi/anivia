@@ -6,7 +6,7 @@ import {Grid, Row, Col, Table, Panel} from 'react-bootstrap'
 import Profile from '../components/Profile'
 import RankedStats from '../components/RankedStats'
 import RecentGames from '../components/RecentGames'
-import CurrentGame from '../components/CurrentGame'
+import LiveGameContainer from '../containers/LiveGameContainer'
 
 function loadData(props, forced = false) {
     const {region, summonerName, summoner, currentGame} = props
@@ -35,16 +35,20 @@ class SummonerPage extends Component {
     }
 
     render() {
-        const {summoner, currentGame, recentGames, rankedLeagues, rankedStats, aggregateRankedStats, region} = this.props
+        const {summoner, summoners, currentGame, recentGames, rankedLeagues, rankedStats, aggregateRankedStats, region} = this.props
         if (summoner && summoner.name) {
             return (
                 <Grid >
+                    <Row>
+                        <Col md={12}>
+                            <LiveGameContainer region={region} game={currentGame} rankedLeagues={rankedLeagues} summoners={summoners} />
+                            </Col>
+                        </Row>
                     <Row>
                         <Col xs={12} md={3}>
                             <Profile aggregateRankedStats={ aggregateRankedStats } summoner={ summoner } rankedLeagues={ rankedLeagues } />
                         </Col>
                         <Col xs={12} md={9}>
-                            <CurrentGame currentGame={currentGame} region={region} rankedLeagues={ rankedLeagues } />
                             <RecentGames fill recentGames={ recentGames }/>
                             <RankedStats rankedStats={ rankedStats } summoner={ summoner } />
                         </Col>
@@ -94,6 +98,7 @@ function mapStateToProps(state, ownProps) {
         region,
         summonerName,
         summoner,
+        summoners,
         rankedStats: summoner && rankedStatsData ? rankedStatsData[summoner.id] || [] : [],
         recentGames: summoner && recentGamesData ? recentGamesData[summoner.id] || [] : [],
         aggregateRankedStats: summoner && aggregateRankedStatsData ? aggregateRankedStatsData[summoner.id] : {},

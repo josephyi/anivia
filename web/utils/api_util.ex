@@ -10,7 +10,7 @@ defmodule Anivia.ApiUtil do
   end
 
   def summoners_in_games(region, games) do
-    arr = get_in(Map.values(games), [Access.all, "participants"])
+    get_in(Map.values(games), [Access.all, "participants"])
     |> List.flatten
     |> Enum.map(&(canonicalize(&1["summonerName"])))
     |> Enum.chunk(40, 40, [])

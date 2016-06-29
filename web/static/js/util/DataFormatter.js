@@ -27,15 +27,20 @@ export function rankedWinLoss(queueType, rankedLeagues, summonerId) {
     }
 }
 
-export const leagueInfo = (rankedLeagues, summonerId) => {
-    const league = rankedLeagues[summonerId]
-    if(league) {
+export const leagueInfo = (rankedLeagues, summoner) => {
+    const league = rankedLeagues[summoner['id']]
+    const summonerLevel = summoner['summonerLevel']
+
+    if(summonerLevel === 30 && league) {
         return (<span>
             {tierAndDivision(league[0])}{' '}
             ({league[0]['entries'][0]['leaguePoints']} LP)</span>)
-    } else {
-        <span>Not Placed</span>
     }
+
+    if(summonerLevel < 30)
+        return (<span>Level {summonerLevel}</span>)
+    else
+        return (<span>Unranked</span>)
 }
 
 export const tierAndDivision = league => {
