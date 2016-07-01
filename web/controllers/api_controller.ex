@@ -74,9 +74,9 @@ defmodule Anivia.ApiController do
   def current_game_response(region, summoner_id) do
     current_game = Viktor.current_game(region, summoner_id)
     case current_game do
-      %{"status" => %{"status_code" => 404}} ->
+      %{"status" => %{"status_code" => _}} ->
         %{
-          "currentGamesMap" => %{Integer.to_string(summoner_id) => -1},
+          "currentGamesMap" => %{to_integer(summoner_id) => -1},
           "currentGames" => %{}
         }
       _ ->
@@ -87,6 +87,14 @@ defmodule Anivia.ApiController do
         }
     end
   end
+
+  def to_integer(summoner_id) when is_integer(summoner_id) do
+    to_integer(Integer.to_string(summoner_id))
+  end
+
+    def to_integer(summoner_id) when is_binary(summoner_id) do
+      summoner_id
+    end
 
   def summoner_profile(region, summoner) do
     current_game = Viktor.current_game(region, summoner["id"])
@@ -128,14 +136,20 @@ defmodule Anivia.ApiController do
   end
 
   def recent_games_data(region, summoner_id) do
-    %{"recentGamesData" => %{ summoner_id => Viktor.recent_games(region, summoner_id)["games"] }}
+    recent_games = Viktor.recent_games(region, summoner_id)["games"]
+    case recent_games do
+      %{"status" => %{"status_code" => _}} ->
+        %{"recentGamesData" => %{ summoner_id =>  []}}
+      _ ->
+        %{"recentGamesData" => %{ summoner_id =>  recent_games}}
+    end
   end
 
   def ranked_response(region, summoner_id) do
     ranked_stats_response = Viktor.ranked_stats(region, summoner_id)
 
     case ranked_stats_response do
-          %{"status" => %{"status_code" => 404}} ->
+          %{"status" => %{"status_code" => _}} ->
             %{
               "aggregateRankedStatsData" => %{ summoner_id => %{} },
               "rankedStatsData" => %{ summoner_id => [] }
