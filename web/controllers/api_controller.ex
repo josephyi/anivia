@@ -13,15 +13,9 @@ defmodule Anivia.ApiController do
     else
       featured_games_response = Viktor.featured_games(region)
 
-      case featured_games_response do
-        %{"status" => %{"status_code" => _}} ->
-          conn
-          |> put_status(featured_games_response["status"] |> Map.fetch!("status_code"))
-          |> render(Anivia.ErrorView, "errors.json", response: featured_games_response)
-        %{"gameList" => []} ->
-          json conn, []
-        _ ->
-          current_games = featured_games_response["gameList"]
+      case featured_games_response.status_code do
+        200 ->
+          current_games = featured_games_response.body["gameList"]
           |> Enum.reduce(%{}, &(Map.put(&2, Integer.to_string(&1["gameId"]), &1)))
 
           summoners = Anivia.ApiUtil.summoners_in_games(region, current_games)
@@ -29,7 +23,7 @@ defmodule Anivia.ApiController do
 
           response = %{
             "summoners" => summoners,
-            "featuredGames" => featured_games_response,
+            "featuredGames" => featured_games_response.body,
             "rankedLeagues" => rankedLeagues,
             "currentGame" => %{},
             "currentGamesMap" => %{},
@@ -41,6 +35,10 @@ defmodule Anivia.ApiController do
 
           ConCache.put(:response_cache, cache_key, %ConCache.Item{value: response, ttl: :timer.seconds(300)})
           json conn, response
+        _ ->
+          conn
+          |> put_status(featured_games_response.status_code)
+          |> render(Anivia.ErrorView, "errors.json", response: featured_games_response.body)
       end
     end
   end
@@ -49,13 +47,13 @@ defmodule Anivia.ApiController do
       canonical_name = canonicalize(summoner_name)
 
       response = Viktor.Operation.Summoner.by_name(region, canonical_name)
-      case response do
-         %{"status" => %{"status_code" => _}} ->
+      case response.status_code do
+         200 ->
+           json conn, summoner_profile(region, response.body[canonical_name]) |> wrap_response(region)
+         _ ->
            conn
-           |> put_status(response["status"] |> Map.fetch!("status_code"))
-           |> render(Anivia.ErrorView, "errors.json", response: response)
-         %{^canonical_name => summoner_response} ->
-           json conn, summoner_profile(region, summoner_response) |> wrap_response(region)
+           |> put_status(response.status_code)
+           |> render(Anivia.ErrorView, "errors.json", response: response.body)
       end
   end
 
@@ -72,45 +70,47 @@ defmodule Anivia.ApiController do
   end
 
   def current_game_response(region, summoner_id) do
-    current_game = Viktor.current_game(region, summoner_id)
-    case current_game do
-      %{"status" => %{"status_code" => 404}} ->
-        %{
-          "currentGamesMap" => %{Integer.to_string(summoner_id) => -1},
-          "currentGames" => %{}
-        }
-      _ ->
+    current_game_response = Viktor.current_game(region, summoner_id)
+    case current_game_response.status_code do
+      200 ->
+        current_game = current_game_response.body
         ids = Enum.map(current_game["participants"], &(&1["summonerId"]))
         %{
           "currentGamesMap" => Map.new(ids, &{Integer.to_string(&1), current_game["gameId"]}),
           "currentGames" => %{Integer.to_string(current_game["gameId"]) => current_game}
         }
+      _ ->
+        %{
+          "currentGamesMap" => %{Integer.to_string(summoner_id) => -1},
+          "currentGames" => %{}
+        }
     end
   end
 
   def summoner_profile(region, summoner) do
-    current_game = Viktor.current_game(region, summoner["id"])
+    current_game_response = Viktor.current_game(region, summoner["id"])
     ranked_data_task = Task.async(fn -> ranked_data(region, summoner) end)
     recent_games_task = Task.async(fn -> recent_games_data(region, Integer.to_string(summoner["id"])) end)
 
-    case current_game do
-      %{"status" => %{"status_code" => 404}} ->
-        league_entry_task = Task.async(fn -> Viktor.Operation.League.by_summoner_entry(region, summoner["id"]) end)
+    case current_game_response.status_code do
+      200 ->
+        current_game = current_game_response.body
+        names = Enum.map(current_game["participants"], &(canonicalize(&1["summonerName"]))) |> Enum.join(",")
+        ids = Enum.map(current_game["participants"], &(&1["summonerId"]))
+        league_entry_task = Task.async(fn -> Viktor.Operation.League.by_summoner_entry(region, ids |> Enum.join(",")).body end)
+        %{
+          "summoners" => Viktor.Operation.Summoner.by_name(region, names).body,
+          "currentGamesMap" => Map.new(ids, &{Integer.to_string(&1), current_game["gameId"]}),
+          "currentGames" => %{Integer.to_string(current_game["gameId"]) => current_game},
+          "rankedLeagues" => Task.await(league_entry_task)
+        } |> Map.merge(Task.await(ranked_data_task)) |> Map.merge(Task.await(recent_games_task))
+      _ ->
+        league_entry_task = Task.async(fn -> Viktor.Operation.League.by_summoner_entry(region, summoner["id"]).body end)
 
         %{
           "summoners" => %{canonicalize(summoner["name"]) => summoner},
           "currentGamesMap" => %{Integer.to_string(summoner["id"]) => -1},
           "currentGames" => %{},
-          "rankedLeagues" => Task.await(league_entry_task)
-        } |> Map.merge(Task.await(ranked_data_task)) |> Map.merge(Task.await(recent_games_task))
-      _ ->
-        names = Enum.map(current_game["participants"], &(canonicalize(&1["summonerName"]))) |> Enum.join(",")
-        ids = Enum.map(current_game["participants"], &(&1["summonerId"]))
-        league_entry_task = Task.async(fn -> Viktor.Operation.League.by_summoner_entry(region, ids |> Enum.join(",")) end)
-        %{
-          "summoners" => Viktor.Operation.Summoner.by_name(region, names),
-          "currentGamesMap" => Map.new(ids, &{Integer.to_string(&1), current_game["gameId"]}),
-          "currentGames" => %{Integer.to_string(current_game["gameId"]) => current_game},
           "rankedLeagues" => Task.await(league_entry_task)
         } |> Map.merge(Task.await(ranked_data_task)) |> Map.merge(Task.await(recent_games_task))
     end
@@ -128,20 +128,15 @@ defmodule Anivia.ApiController do
   end
 
   def recent_games_data(region, summoner_id) do
-    %{"recentGamesData" => %{ summoner_id => Viktor.recent_games(region, summoner_id)["games"] }}
+    %{"recentGamesData" => %{ summoner_id => Viktor.recent_games(region, summoner_id).body["games"] }}
   end
 
   def ranked_response(region, summoner_id) do
     ranked_stats_response = Viktor.ranked_stats(region, summoner_id)
 
-    case ranked_stats_response do
-          %{"status" => %{"status_code" => 404}} ->
-            %{
-              "aggregateRankedStatsData" => %{ summoner_id => %{} },
-              "rankedStatsData" => %{ summoner_id => [] }
-            }
-          _ ->
-            { summoner_ranked_stats, champion_ranked_stats } = ranked_stats_response["champions"]
+    case ranked_stats_response.status_code do
+          200 ->
+            { summoner_ranked_stats, champion_ranked_stats } = ranked_stats_response.body["champions"]
                     |> Map.new(&{Integer.to_string(&1["id"]), &1["stats"]})
                     |> Map.pop("0")
 
@@ -150,7 +145,11 @@ defmodule Anivia.ApiController do
             "aggregateRankedStatsData" => %{ summoner_id => summoner_ranked_stats },
             "rankedStatsData" => %{ summoner_id => champion_stats }
             }
-
+          _ ->
+            %{
+              "aggregateRankedStatsData" => %{ summoner_id => %{} },
+              "rankedStatsData" => %{ summoner_id => [] }
+            }
     end
   end
 

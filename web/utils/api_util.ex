@@ -4,7 +4,7 @@ defmodule Anivia.ApiUtil do
     |> Map.values
     |> Enum.map(&(&1["id"]))
     |> Enum.chunk(10, 10, [])
-    |> Enum.map(&(Task.async(fn -> Viktor.Operation.League.by_summoner_entry(region, Enum.join(&1, ",")) end)))
+    |> Enum.map(&(Task.async(fn -> Viktor.Operation.League.by_summoner_entry(region, Enum.join(&1, ",")).body end)))
     |> Enum.map(&(Task.await(&1)))
     |> Enum.reduce(%{}, &(Map.merge(&2, &1)))
   end
@@ -14,7 +14,7 @@ defmodule Anivia.ApiUtil do
     |> List.flatten
     |> Enum.map(&(canonicalize(&1["summonerName"])))
     |> Enum.chunk(40, 40, [])
-    |> Enum.map(&(Task.async(fn -> Viktor.Operation.Summoner.by_name(region, Enum.join(&1, ",")) end)))
+    |> Enum.map(&(Task.async(fn -> Viktor.Operation.Summoner.by_name(region, Enum.join(&1, ",")).body end)))
     |> Enum.map(&(Task.await(&1)))
     |> Enum.reduce(%{}, &(Map.merge(&2, &1)))
   end
