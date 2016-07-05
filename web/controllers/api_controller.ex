@@ -46,7 +46,7 @@ defmodule Anivia.ApiController do
   def summoner(conn, %{"region" => region, "summoner_name" => summoner_name}) do
       canonical_name = canonicalize(summoner_name)
 
-      response = Viktor.Operation.Summoner.by_name(region, canonical_name)
+      response = Viktor.summoner.by_name(region, canonical_name)
       case response.status_code do
          200 ->
            json conn, summoner_profile(region, response.body[canonical_name]) |> wrap_response(region)
@@ -132,7 +132,13 @@ defmodule Anivia.ApiController do
   end
 
   def recent_games_data(region, summoner_id) do
-    %{"recentGamesData" => %{ summoner_id => Viktor.recent_games(region, summoner_id).body["games"] }}
+    recent_games_response = Viktor.recent_games(region, summoner_id)
+    case recent_games_response.status_code do
+      200 ->
+        %{"recentGamesData" => %{ summoner_id => recent_games_response.body["games"] }}
+      _ ->
+        %{"recentGamesData" => %{ summoner_id => [] }}
+    end
   end
 
   def ranked_response(region, summoner_id) do
@@ -154,17 +160,6 @@ defmodule Anivia.ApiController do
               "aggregateRankedStatsData" => %{ summoner_id => %{} },
               "rankedStatsData" => %{ summoner_id => [] }
             }
-    end
-  end
-
-  def api_task_handler(task, key \\ nil) do
-    case Task.await(task) do
-      %{^key => result} ->
-        result
-      %{"status" => %{"status_code" => status_code, "message" => message}} ->
-        %{"status_code" => status_code, "message" => message}
-      response ->
-        response
     end
   end
 end
