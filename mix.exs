@@ -19,7 +19,7 @@ defmodule Anivia.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [mod: {Anivia, []},
-     applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext, :viktor, :con_cache
+     applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext, :viktor, :con_cache, :ex_rated
                   # :phoenix_ecto, :postgrex
                    ]]
   end
@@ -33,6 +33,7 @@ defmodule Anivia.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [#{:exrm, "~> 1.0.5"},
+     {:ex_rated, "~> 1.2"},
      {:phoenix, "~> 1.2.0"},
      #{:postgrex, ">= 0.0.0"},
      #{:phoenix_ecto, "~> 3.0-rc"},
@@ -43,7 +44,7 @@ defmodule Anivia.Mixfile do
      {:cowboy, "~> 1.0"},
      {:poison, "~> 2.2.0", override: true},
      {:con_cache, "~> 0.11.0"},
-     {:viktor, "~> 0.1.1"}]
+     {:viktor, "~> 0.2.0"}]
   end
 
   # Aliases are shortcut or tasks specific to the current project.
