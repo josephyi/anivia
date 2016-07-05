@@ -69,7 +69,11 @@ defmodule Anivia.ApiController do
     json conn, response
   end
 
-  def current_game_response(region, summoner_id) do
+  def current_game_response(region, summoner_id) when is_integer(summoner_id) do
+    current_game_response(region, Integer.to_string(summoner_id))
+  end
+
+  def current_game_response(region, summoner_id) when is_binary(summoner_id) do
     current_game_response = Viktor.current_game(region, summoner_id)
     case current_game_response.status_code do
       200 ->
@@ -81,7 +85,7 @@ defmodule Anivia.ApiController do
         }
       _ ->
         %{
-          "currentGamesMap" => %{Integer.to_string(summoner_id) => -1},
+          "currentGamesMap" => %{summoner_id => -1},
           "currentGames" => %{}
         }
     end
