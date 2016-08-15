@@ -17,6 +17,7 @@ defmodule Anivia.Router do
     pipe_through :browser # Use the default browser stack
 
     get "/", PageController, :index
+    get "/about", PageController, :index
     get "/:region/:summoner_name", PageController, :index
   end
 

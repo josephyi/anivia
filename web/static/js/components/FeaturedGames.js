@@ -13,7 +13,11 @@ const FeaturedGames = ({featuredGames, region, rankedLeagues, summoners}) => {
                 {renderFeaturedGames(region, featuredGames, rankedLeagues, summoners)}
            </Row>
         )
-    } else return null
+    } else {
+        return (
+            <img src="/images/loading.gif" />
+        )
+    }
 }
 
 const renderFeaturedGames = (region, games, rankedLeagues, summoners) => (
@@ -21,11 +25,9 @@ const renderFeaturedGames = (region, games, rankedLeagues, summoners) => (
 )
 
 const renderGame = (region, game, rankedLeagues, summoners) => (
-    //<Carousel.Item key={game.gameId}>
         <Col md={12} key={game.gameId}>
           <LiveGameContainer region={region} game={game} rankedLeagues={rankedLeagues} summoners={summoners} />
         </Col>
-    //</Carousel.Item>
 )
 
 const renderParticipants = (region, participants) => (

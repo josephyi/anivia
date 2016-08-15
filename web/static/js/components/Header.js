@@ -1,6 +1,6 @@
 import React from 'react'
 import SearchForm from './SearchForm'
-import { Navbar, FormGroup, FormControl, Button } from 'react-bootstrap'
+import { Nav, NavItem, Navbar, FormGroup, FormControl, Button } from 'react-bootstrap'
 import { Link } from 'react-router'
 
 const Header = ({ handleSubmit }) => {
@@ -12,6 +12,9 @@ const Header = ({ handleSubmit }) => {
                       <Link to="/">Anivia</Link>
                   </Navbar.Brand>
               </Navbar.Header>
+              <Nav>
+                  <li><Link to="/about">About</Link></li>
+              </Nav>
               <SearchForm onSubmit={ handleSubmit } />
           </Navbar>
       </header>
