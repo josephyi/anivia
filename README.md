@@ -1,3 +1,5 @@
+[![Ebert](https://ebertapp.io/github/josephyi/anivia.svg)](https://ebertapp.io/github/josephyi/anivia)
+
 # Anivia
 
 > "Let's soar."
