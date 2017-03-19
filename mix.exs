@@ -44,7 +44,8 @@ defmodule Anivia.Mixfile do
      {:cowboy, "~> 1.0"},
      {:poison, "~> 2.2.0", override: true},
      {:con_cache, "~> 0.11.0"},
-     {:viktor, "~> 0.2.0"}]
+     {:viktor, "~> 0.2.0"},
+     {:distillery, "~> 1.0"}]
   end
 
   # Aliases are shortcut or tasks specific to the current project.
